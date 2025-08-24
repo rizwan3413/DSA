@@ -1,0 +1,476 @@
+  
+#include<iostream>
+using namespace std;
+
+template<typename T>
+class DoubleLinkedList
+{
+    private:
+    
+    class Node
+    {
+        public:
+       
+        T data;
+                     
+        Node *next;
+        Node *prev;
+       
+        Node():next(nullptr),prev(nullptr){}
+       
+        Node(T data1):data(data1){}
+    };
+    
+    public :
+    
+    Node *head;
+    
+    DoubleLinkedList():head(nullptr){}
+    
+    
+    //Assigment Operator 
+    DoubleLinkedList& operator = (const DoubleLinkedList &rhs)
+    {
+        if(this!= &rhs)
+        {
+            // Linked List N1, N2(N1)
+        
+        // Original Link list - cur 
+        //Final Linked List - temp
+        
+        Node *temp = new Node(rhs.head->data);//1st Node 
+        
+        head = temp;
+        
+        Node* curr = rhs.head;//Pointer to node 1 of rhs 
+        
+        curr = curr->next; // 2nd Node 
+        
+        while(curr!=nullptr)
+        {
+            Node *temp1 = new Node(curr->data);// This will create nodes proportional to the number of links the original linked list 
+            
+            temp1->prev = temp;
+            temp->next = temp1;
+            
+            temp = temp->next;// next link
+            
+            curr = curr->next;
+            
+        }
+        
+    }
+        
+        return *this;
+    }
+    
+    //
+    //Copy Constructor                         
+    DoubleLinkedList(const DoubleLinkedList &rhs)
+    {
+        // Linked List N1, N2(N1)
+        
+        // Original Link list - cur 
+        //Final Linked List - temp
+        
+        Node *temp = new Node(rhs.head->data);//1st Node 
+        
+        head = temp;
+        
+        Node* curr = rhs.head;//Pointer to node 1 of rhs 
+        
+        curr = curr->next; // 2nd Node 
+        
+        while(curr!=nullptr)
+        {
+            Node *temp1 = new Node(curr->data);// This will create nodes proportional to the number of links the original linked list 
+            
+            temp1->prev = temp;
+            temp->next = temp1;
+            
+            temp = temp->next;// next link
+            
+            curr = curr->next;
+            
+        }
+        
+    }
+     ///  head  p-1-n p-2-n p-3-n p-4-n  //1-p =nullptr
+          // head p-0-n p-1-n p-2-n p-3-n p-4-n //  0-p =nullptr
+    void insertAtBegin(T data)
+    {
+        Node *curr = new Node(data);
+       
+        if(head == nullptr)
+           head = curr;
+         
+         else
+         {
+             curr->next = head;
+             head->prev = curr;
+             head = curr;
+             
+         }
+    }
+	
+	///  p-head-n  p-1-n p-2-n p-5-n p-3-n p-4-n 
+   
+   void deleteAtBegin()
+    {
+        
+        if(head == nullptr)
+            return;
+        else
+        {
+            Node *tmp = head;
+            head = head->next;//2
+			head->prev = nullptr;
+            delete tmp;//1
+        }
+    }
+   
+    int size()
+    {
+        Node *curr = head;
+       
+        int count = 0 ;
+       
+        while(curr!= nullptr)
+        {
+            count++;
+            curr = curr->next;
+        }
+        return count;
+    }
+   
+   ///  p-head-n p-0-n p-1-n p-2-n p-5-n p-3-n p-4-n 
+   
+    void insertAtEnd(T data)
+    {
+        Node *curr = new Node(data);
+       
+        if(head == nullptr)
+            head = curr;
+       
+        else
+        {
+            Node *curr1 = head;
+       
+            while(curr1->next!=nullptr)
+            {
+                curr1 = curr1->next;
+            }
+       
+            curr1->next = curr;
+            curr->prev = curr1;
+        }
+    }
+   
+    
+   void deleteAtEnd()
+    {
+    
+        if(head == nullptr)
+            return;
+        
+        else
+        {
+            Node *cur = head;
+            
+            while(cur->next != nullptr)
+            {
+                cur = cur->next;
+            }
+            
+            (cur->prev)->next = nullptr;//cur->prev - I went back wards then I set next of that to nullptr 
+            
+            delete cur;
+        }
+        
+    }
+    
+    
+    void printList()
+    {
+        Node *curr = head;
+        
+        while(curr!=nullptr)
+        {
+            cout << curr->data << " ";
+       
+             curr = curr->next;
+        }
+        
+         cout << "\n";
+    }
+
+    void insertAtposition(int pos, T val)
+    {
+            
+        Node *cur = head;
+    
+        int count = 0;
+        
+        
+        if(pos == 1)
+        {   
+            insertAtBegin(val);
+            return;
+        }
+        
+        int l = size()+1;
+        
+        if(pos > l)
+        {
+            cout << "Out of Bound condition reached" << endl;
+            return;
+        }
+        
+        if(pos == l)
+        {   
+            insertAtEnd(val);
+            return;
+        }
+        
+        while(cur!=nullptr)
+        {
+            count++;
+            
+            if(count == (pos-1))
+                break;
+            
+            cur = cur->next;
+        }
+        
+        Node *tmp1 = new Node(val);
+        
+        tmp1->next = cur->next;
+        tmp1->prev = cur;
+        
+        (cur->next)->prev = tmp1;
+        cur->next = tmp1;
+    }
+   
+    ///  p-head-n p-0-n p-1-n p-2-n p-5-n p-3-n p-4-n
+                        //2 steps
+                        // (2-p)->n = 2-n;
+                        //(2-n)->p = 2-p;
+                        
+   void deleteAtposition(int pos)
+    {
+        Node *cur = head;
+    
+        int count = 0;
+        
+        
+        if(pos == 1)
+        {   
+            deleteAtBegin();
+            return;
+        }
+        
+        int last = size()+1;
+        
+        if(pos == last)
+        {   
+            deleteAtEnd();
+            return;
+        }
+        
+        
+        if(pos > last)
+            return;
+        
+        //2 steps
+        // (2-p)->n = 2-n;
+        //(2-n)->p = 2-p;
+ //p-head-n p-0-n p-1-n p-2-n p-5-n p-3-n p-4-n                        
+        while(cur!=nullptr)
+        {
+             count++;
+             
+            if(count == pos) 
+                break;
+        
+            cur = cur->next;
+        }
+        
+        (cur->prev)->next = cur->next;
+        (cur->next)->prev = cur->prev;
+        
+        delete cur;
+        
+    }
+    
+    void printFromEnd()
+    {
+        Node *cur = head;
+        
+        while(cur->next!=nullptr)
+        {
+            cur = cur->next;
+        }
+        
+        while(cur!= nullptr)
+        {
+            cout << cur->data << " ";
+            
+            cur = cur->prev;
+        }
+        
+            cout << "\n";
+    }
+    
+    void reverse()
+    {
+        if(head == nullptr)
+            return;
+        
+        Node *curr = head;
+        
+        Node *next = nullptr;
+        
+        Node *prev = nullptr;
+        
+        while(curr!=nullptr)
+        {
+            next = curr->next;
+            
+            curr->next = prev;
+            
+            prev = curr;
+            
+            curr = next;
+            
+        }
+        
+        head = prev;
+    }
+    
+    void swap(Node *initial,Node *final)
+    {
+        Node* prev_initial = head;
+        
+        if(initial == head)
+            prev_initial = nullptr;
+        else
+        {
+            while(prev_initial->next!= initial)
+            {
+                prev_initial = prev_initial->next; 
+            }
+        
+        }
+        
+        // temp = initial->next; initial->next = final->next, final->next = temp;
+                               
+        
+        Node* prev_final = head;
+        
+        if(final == head)
+            prev_final = nullptr;
+        
+        else
+        {
+            while(prev_final->next!= final)
+            {
+                prev_final = prev_final->next; 
+            }
+        }
+        
+        if(prev_initial == nullptr)
+            head = final;
+        else
+            prev_initial->next = final;
+        
+        if(prev_final == nullptr)
+            head = initial;
+        else    
+            prev_final->next = initial;
+        
+        auto temp = initial->next;
+        initial->next = final->next;
+        final->next = temp;
+        
+    }
+
+    Node* operator [] (int index)
+    {
+        if(index < 0) 
+            throw index;
+        
+        Node  *curr = head;
+        
+        int count = -1;
+        
+        while(curr!=nullptr)
+        {
+            count++;
+            
+            if(count == index)
+                break;
+                
+            curr = curr->next;
+        }
+        
+        if(curr == nullptr) 
+            throw index;
+        
+        return curr;
+    }
+ 
+};
+
+int main()
+{
+    DoubleLinkedList<int> N1;
+   
+    N1.insertAtBegin(25);
+   
+    N1.insertAtBegin(2);
+   
+    N1.insertAtBegin(3);
+   
+    N1.insertAtEnd(1);
+    
+    N1.insertAtEnd(2);
+    
+    N1.insertAtEnd(3);
+    
+    N1.insertAtEnd(4);
+    
+    N1.insertAtposition(2,11);
+   
+    N1.printList();
+   
+    cout << N1.size() << endl;
+    
+    N1.printFromEnd();
+
+    N1.deleteAtBegin();
+    
+    N1.printList();
+    
+    N1.deleteAtEnd();
+    
+    N1.printList();
+    
+    N1.deleteAtposition(2);
+    
+    N1.printList();
+     
+    //N1.printFromEnd();
+    
+    DoubleLinkedList<int> N2(N1);
+    
+    DoubleLinkedList<int> N3;
+    
+    N3 = N2;
+    
+    N2.printList();
+    
+    N3.printList();
+       
+    return 0;
+}
+ 

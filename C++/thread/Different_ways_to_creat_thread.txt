@@ -1,0 +1,92 @@
+#include <iostream>
+#include <unordered_map>
+#include <thread>
+#include <future>
+#include <mutex>
+#include <stop_token> // C++20 only
+
+// Shared memoization table and recursive mutex
+std::unordered_map<int, int> mem;
+std::recursive_mutex mem_mutex;
+
+// Thread-safe memoized Fibonacci
+int fib(int n) {
+    std::lock_guard<std::recursive_mutex> lock(mem_mutex);
+    if (mem.count(n)) return mem[n];
+    if (n == 0 || n == 1) return mem[n] = n;
+    return mem[n] = fib(n - 1) + fib(n - 2);
+}
+
+// 1. Global function
+void compute_fib_global(int n) {
+    int result = fib(n);
+    std::cout << "[Global ] Fib(" << n << ") = " << result << std::endl;
+}
+
+// 2. Async
+void compute_fib_async(int n) {
+    auto fut = std::async(std::launch::async, fib, n);
+    std::cout << "[Async  ] Fib(" << n << ") = " << fut.get() << std::endl;
+}
+
+// 3. Class member function
+class FibWorker {
+public:
+    void compute(int n) {
+        int result = fib(n);
+        std::cout << "[Class  ] Fib(" << n << ") = " << result << std::endl;
+    }
+};
+
+// 4. Future + Promise
+void compute_fib_promise(int n, std::promise<int> p) {
+    p.set_value(fib(n));
+}
+
+// 5. jthread
+void compute_fib_jthread(std::stop_token st, int n) {
+    if (st.stop_requested()) {
+        std::cout << "[jthread] Cancelled before computing\n";
+        return;
+    }
+    int result = fib(n);
+    if (!st.stop_requested()) {
+        std::cout << "[jthread] Fib(" << n << ") = " << result << std::endl;
+    } else {
+        std::cout << "[jthread] Cancelled after computing\n";
+    }
+}
+
+int main() {
+    int n = 10;
+
+    std::cout << "\n--- 1. std::thread with global function ---\n";
+    std::thread t1(compute_fib_global, n);
+    t1.join();
+
+    std::cout << "\n--- 2. std::async ---\n";
+    compute_fib_async(n);
+
+    std::cout << "\n--- 3. std::thread with class member ---\n";
+    FibWorker worker;
+    std::thread t2(&FibWorker::compute, &worker, n);
+    t2.join();
+
+    std::cout << "\n--- 4. std::promise + std::future ---\n";
+    std::promise<int> p;
+    std::future<int> fut = p.get_future();
+    std::thread t3(compute_fib_promise, n, std::move(p));
+    std::cout << "[Promise] Fib(" << n << ") = " << fut.get() << std::endl;
+    t3.join();
+
+    std::cout << "\n--- 5. std::jthread ---\n";
+    std::jthread jt(compute_fib_jthread, n);
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    jt.request_stop();
+
+    return 0;
+}
+
+
+Output:
+=======

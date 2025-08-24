@@ -1,0 +1,4294 @@
+﻿
+
+ Memory Layout in C
+ 
+ Environment - Command Line Arguments and the Environment Variables are stored in in the environment section;
+ 
+ So the memory layout in C is basically divided in to five components:-
+ 
+  
+High Addresses ---> .----------------------.
+                    |      Environment     |
+                    |----------------------|
+                    |                      |   Functions and variable are declared
+                    |         STACK        |   on the stack.
+base pointer ->     | - - - - - - - - - - -|
+                    |           |          |
+                    |           v          |
+                    :                      :
+                    .                      .   The stack grows down into unused space
+                    .         Empty        .   while the heap grows up. 
+                    .                      .
+                    .                      .   (other memory maps do occur here, such 
+                    .                      .    as dynamic libraries, and different memory
+                    :                      :    allocate)
+                    |           ^          |
+                    |           |          |
+ brk point ->       | - - - - - - - - - - -|   Dynamic memory is declared on the heap
+                    |          HEAP        |
+                    |                      |
+                    |----------------------|
+                    |          BSS         |   Uninitialized data (BSS)
+                    |----------------------|   
+                    |          Data        |   Initialized data (DS)
+                    |----------------------|
+                    |          Text        |   Binary code
+Low Addresses ----> '----------------------'  
+
+
+1)Stack - 
+
+- It contains the function variables and the Book keeping related data
+- It comes in to existence based on the System Function call ---> As soon as there is a function call there is something called as Stack Frame which will create a Stack . 
+  Every Function has a Stack Frame : The Stack Frame contains Functions local variable arguments and return value
+- As the size of the Stack progresses it continues to grow down towards Heap area from top to bottom
+- Once the Function call is complete and the respective function returns the corresponding value the Stack memory is erased.
+- Stack follows LIFO method for (Pushing-insertion) and (Popping-removing) the variables from the Stack
+
+2)Heap -
+
+- Area is used when allocation of memory at run-time is needed.
+- This area is managed by memory management functions like malloc,calloc,free etc.
+- The Heap area is shared by all shared libraries and dynamically loaded modules in a process.
+- It grows and shrinks in the opposite direction of the stack.
+
+3)BSS(Block Stored by Sybmol)
+
+- All unitialized Global and Static variables are stored in BSS 
+- All variables in this segment are initialized to zero 
+- The Program Loader allocates the memory to the BSS section when it loads the program
+
+4)Data Segment -
+
+- It contains explicitly initialized global and Static variables 
+- The size of the segment is determined by size of the values in program source code
+- It has Read-Write permission so that the value of the variable of the segment can be changed at run-time.
+
+
+5)Text
+ 
+- Text segment contains binary of the compiled program.
+- The text segment is a read-only segment that prevents a program from being accidentally modified.
+- It is sharable so that only a single copy needs to be in memory for frequently executed programs such as text editors etc.
+
+Storage Duration in C :
+--------------------------
+
+- Static 
+- Thread (C11)
+- Automatic 
+- Allocated
+
+Memory mangemnet Functions in C:
+----------------------------------
+- Malloc function allocates the space for an object whoose size is determined by size of operator
+- The Size of the allocated memory is dependant on the input given by the user
+- If there is no space in the memory the malloc function returns NULL 
+
+Syntax for malloc 
+
+void *malloc(size_t size);
+
+char *piBuffer = (char *)malloc( 5 *sizeof(char)); // Allocates 5 bytes of memory to a Pointer pointing to a Character variable
+
+Use of Explicit Key Word :
+=========================
+
+#include<iostream>
+using namespace std;
+
+class Complex{
+    
+    private:
+    
+    double real;
+    double imag;
+    
+    public:
+    
+    explicit Complex(double r =0.0,double i = 0.0):real(r),imag(i){}
+    
+    bool operator == (Complex rhs)
+    {
+        return ((rhs.real == real) && (rhs.imag == imag));
+    }
+};
+
+int main()
+{
+    Complex c1(3.0,0.0);
+    
+    if (c1 == (Complex)3.0)
+    {
+        cout <<"same" << endl;
+    }
+    else
+    {
+        cout << "Not Same";
+    }
+    return 0;
+}
+
+
+#1 Program to print the sum of n natural numbers :-
+===========================================================
+void main()
+{
+    int i = 0; 
+    int sum=0;
+    int n;
+    
+    
+    printf("Enter the desired number you want the sum : \n");
+     scanf("%d",&n);
+     
+    printf("Program to Demonstrate the sum of %d numbers \n",n );
+     
+     for (i=1;i<=n;i++)
+     
+     sum = sum+i;
+    
+    printf("The sum of n natural numbers is %d\n",sum);
+    
+}
+
+2- Program - To insert elements and insert at specific position
+================================================================
+1)The first program is a generalized program to insert elements in a array at any position desired by the user
+==================================================================================================================
+#include <stdio.h>
+
+
+int main()
+{
+   int array[5];
+   int position; 
+   int n;
+   int value;
+ 
+   printf("Enter number of elements in array\n");
+   scanf("%d", &n);
+ 
+   printf("Enter %d elements\n", n);
+ 
+   for (c = 0; c < n; c++)
+      scanf("%d", &array[c]);
+ 
+   printf("Enter the location where you wish to insert an element\n");
+   scanf("%d", &position);
+ 
+   printf("Enter the value to insert\n");
+   scanf("%d", &value);
+ 
+   for (c = n - 1; c >= position -1; c--)
+   {
+     array[c+1] = array[c];
+   }
+   array[position-1] = value;
+   
+   
+   printf("Resultant array is\n");
+ 
+   for (c = 0; c <= n; c++)
+   {
+      printf("%d\n", array[c]);
+ }
+   return 0;
+}
+
+3)Program to insert elements in a array at specific position desired by the user( I had considered the location as 3 in the example position =  3;
+=======================================================================================================================================================================================
+int main()
+{
+   int array[5];
+   int c; 
+   int n;
+   int value;
+ 
+   printf("Enter number of elements in array\n");
+   scanf("%d", &n);
+ 
+   printf("Enter %d elements\n", n);
+ 
+   for (c = 0; c < n; c++)
+      scanf("%d", &array[c]);
+
+   printf("Enter the value to insert\n");
+   scanf("%d", &value);
+ 
+   for (c = n - 1; c >= 2; c--) 
+   {
+     array[c+1] = array[c];
+   }
+   array[3-1] = value;
+   
+   
+   printf("Resultant array is\n");
+ 
+   for (c = 0; c <= n; c++)
+      printf("%d\n", array[c]);
+ 
+   return 0;
+}
+
+4) Delete elements in a array at specific position desired by the user( I had considered the location as 3 in the example position =  3;)
+=======================================================================================================================================================================================
+int main()
+{
+   int array[5];
+   int position; 
+   int n;
+   int value;
+ 
+   printf("Enter number of elements in array\n");
+   scanf("%d", &n);
+ 
+   printf("Enter %d elements\n", n);
+ 
+   for (c = 0; c < n; c++)
+      scanf("%d", &array[c]);
+ 
+   printf("Enter the location where you wish to delete an element\n");
+   scanf("%d", &position);
+ 
+   //printf("Enter the value to insert\n");
+   //scanf("%d", &value);
+ 
+   for (c = n - 1; c >= position -1; c--)
+   {
+     array[c] = array[c-1];
+   }
+   //array[position-1] = value;
+   
+   
+   printf("Resultant array is\n");
+ 
+   for (c = 0; c <= n-1; c++)
+   {
+      printf("%d\n", array[c]);
+ }
+   return 0;
+}
+
+
+
+5)Program to Insert and Delete an Element from an Array:-
+===========================================================
+
+
+#include<stdio.h>
+
+int main()
+{
+   int a[21],p,value,i,dp,n;
+   
+    printf("Enter total number of elements 'n' to be entered in  array\n");
+    scanf("%d",&n);
+    
+    printf("Enter %d elements  in  array\n",n);
+    
+    for(i=0;i<n;i++)
+   {
+  scanf("%d",&a[i]);
+   }
+   printf("Enter the desired position you want to insert element in the array\n");
+   scanf("%d",&p);
+   
+   printf("Enter the desired element you want to insert in the array\n");
+   scanf("%d",&value);
+   
+   for(i=n-1;i>=p-1;i--)
+   {
+     a[i+1]=a[i];
+    }
+    
+    a[p-1]=value;
+    
+printf("The Value of array after Insertion is\n");
+
+    for(i=0;i<n;i++)
+
+  printf("%d\n",a[i]);
+
+printf("Enter the position of the element you want to delete\n");
+scanf("%d",&dp);
+
+for(i=p-1;i<n-1;i++)
+
+{
+  a[i]=a[i+1];
+}
+   
+printf("The Value of array after Deletion is\n");
+
+    for(i=0;i<n-1;i++)
+
+  printf("%d\n",a[i]);
+
+    return 0;
+}
+
+6)Program to check if the character is vowel or not:
+=========================================================
+
+#include <stdio.h>
+
+int main()
+
+{
+  char ch;
+ 
+  printf("Enter a character\n");
+  scanf("%c", &ch);
+ 
+  // Checking both lower and upper case
+if(ch=='a'||ch=='e'||ch=='i'||ch=='o'||ch=='u'||ch=='A'||ch=='E'||ch=='I'||ch=='O'||ch=='U')
+
+printf("Entered character %c is a vowel",ch);
+
+else 
+
+printf("Entered character %c is a vowel",ch);
+
+return 0;
+
+}
+
+7)Program to check if the entered year is a Leap year
+=========================================================
+
+#include <stdio.h>
+
+int main()
+{
+    
+int year;
+
+printf("Enter the year\n");
+scanf("%d",&year);
+
+if(year%400==0)
+
+printf("%d is a leap year\n",year);
+
+else if(year%100==0)
+
+printf("%d is not a leap year\n",year);
+
+else if (year%4==0)
+
+printf("%d is a leap year\n",year);
+
+else
+
+// If a number is not divisble by 400 or 100 or 4  
+printf("%d is not a leap year",year);
+return 0;
+}
+8) Program to take Integer as an input and provide total of Integers:
+======================================================================
+#include <stdio.h>
+ 
+int main()
+{
+  int i,sum=0,p,r,n;
+
+  printf("Enter the interger\n");
+  scanf("%d",&n);
+
+  p=n;
+
+  while(p!=0)
+  {
+    r = p % 10;
+    sum = sum+r;
+    p = p/10;
+  }
+
+  printf("Enter the  is %d\n",sum);
+  return 0;
+}
+8) Program to find maximum number of all integers 
+======================================================================
+  #include <stdio.h>
+ 
+int main()
+{
+  int i,sum=0,p,r,n,
+
+  printf("Enter the integer\n");
+  scanf("%d",&n);
+
+  p=n;
+
+  while(p!=0)
+  {
+    r = p % 10;
+    sum = sum+r;
+    p = p/10;
+  }
+
+  printf("Enter the integer is %d\n",sum);
+  return 0;
+}
+ 
+ 
+ This Pointer 
+ 
+ 
+#include <iostream>
+
+using namespace std;
+
+
+class test
+{
+
+    
+    int result,sum;
+
+public:
+
+void show(int result,int sum )
+{
+ 
+    cout<< "The Object address is "<< this<<endl;
+    cout<< "result ="<< (*this).result<<endl;
+    cout<< "sum ="<<(*this).sum<<endl;
+
+    cout<< "result ="<< result<<endl;
+    cout<< "sum ="<<sum<<endl;
+}
+
+
+void get(int result,int sum)
+{
+     cout<< "result ="<< result<<endl;
+    cout<< "sum ="<<sum<<endl;
+}
+
+};
+int main()
+{
+    test t;
+    test t1;
+    //clrscr();
+    t1.get(11,11);
+    t.show(30,40);
+    
+    
+  
+    return 0;
+}
+
+
+ 1)How can a double pointer be useful?  
+ 2)What is function overloading and overwriting? 
+ 3)What are the premium differences between java and c and why might you use c over an object oriented language?
+ 4)The hardest questions was probably about the minimum number of bits required to encode
+ information about a street in a GPS system (including speed limit as a multiple of 5, up to a certain limit, and several other bits of info they give you).
+ 5)The most difficult one involved developing an efficient sort algorithm for a specific data structure.  
+ 6) Calculate a moving average that considers the last N  values. Then discuss handle incoming data. Consider time and memory complexity.
+ ublic class MovingAvg {
+
+ 
+
+▼
+There is simple moving average, Cumulative moving average exponential moving average and weighted moving average.
+    int[] q; // a circular queue of size N
+    int head; //queue head
+    int tail; //queue tail
+    int size; // queue size
+    int sum;
+
+    public MovingAvg(int N) {
+        q = new int[N];
+    }
+
+    //@param num - the next number from data stream
+    //@return - new average with num included and expired number excluded
+    public double getAverage(int num) {
+        double avg = 0;
+        sum += num;
+        if(size == q.length) {
+            sum -= q[head];
+            head = (head + 1) % q.length;
+        } else {
+            size++;
+        }
+        q[tail] = num;
+        tail = (tail + 1) % q.length;
+        return 1.0 * sum / size;
+    }
+}
+7)Implement binary search.
+
+struct treeNode {
+    int val;
+    struct treeNode *left;
+    struct treeNode *right;
+};
+
+struct treeNode *find(struct treeNode *p, int val)
+{
+     if (val val)
+          return find(p-&gt;left, val);
+    else if (val &gt; p-&gt;val)
+          return find(p-&gt;right, val);
+    else
+          return p;
+}
+
+8)what is singleton class
+
+A class where the constructor is private.
+
+class myclass;
+
+myclass *myclass:: _instance = NULL;
+class myclass {
+     private:
+          myclass();
+
+    public:
+          static myclass *_instance;
+          myclass *instance() { if (_instance) return _instance; else return ((_instance = new myclass;));
+};
+
+9) Abstract Class:
+
+
+0
+▼
+Abstract Base Class ("ABC")
+
+Any class where a) cannot be instantiated and b) is comprised of pure virtual functions.
+
+class transport {
+   public:
+        virtual void turnLeft() == 0;
+        virtual void turnRight() == 0;
+};
+
+class car :: public transport
+{
+       public:
+           void turnRight() { printf("Wheel right.\n");
+           void turnLeft() { printf("Wheel left.\n");
+};
+
+class boat : public transport
+{
+      public:
+          void turnRight() { printf("Rudder right.\n"); }
+          void turnLeft() { printf("Rudder left.\n"); }
+}
+
+
+10) Implement a bubble sort algorithm in C
+
+11)Imagine a screen space that can scroll and zoom in on an image, translate any user click from coordinates in the screen space to absolute coordinates in the image ?
+
+12)Write a routine to do an in order traversal of a binary tree. Now do it without using recursion.  
+13)What are some negative runtime impacts of inheritance?
+14)Retrieve the third byte of a 4 byte integer. How would you do it differently if the architecture was big-endian? little-endian?
+15) What is a mutex ?
+
+A Mutual exclusion, is a mechanism for syncrhonization between threads. If a thread has owned a 
+mutex while accessing some resource, another thread waiting on the same mutex will be blocked from accessing the resource until the first thread releases the mutex.
+
+16)Flip a bit in a uint32 using C.
+17)What is the difference between Windows CE/Embedded and a regular Windows OS?
+What is the difference between a mutex and a semaphore?
+How would you use the keyword mutable (C++)?  
+18) Given an integer, write a function that returns the number  of bits in the integer that are set.
+19) Write a function to count the number of bits that are set  in an int.
+20) nt GetBitcountSparse(int someNumber)
+{
+    int bitsSet= 0;
+    while (someNumber != 0)
+    {
+        bitsSet++;
+        someNumber &amp;= (someNumber - 1);
+    }
+    return bitsSet;
+}
+
+int GetBitcountIterated(int someNumber)
+{
+    int bitsSet= 0;
+
+    while (test != 0)
+    {
+        if ((someNumber&amp; 1) == 1)
+            bitsSet++;
+
+        someNumber&gt;&gt;= 1;
+    }
+    return bitsSet;
+}
+
+21) What is the difference between a stack and a queue? 
+22) ? is situation that might result in a stack overflow?  
+
+23) What is the difference between Windows CE/Embedded and a regular Windows OS?
+What is the difference between a mutex and a semaphore?
+How would you use the keyword mutable (C++)? 
+
+24) Write a C function that reverses a given string?
+25) If a program is running slowly on a computer which has a  large amount of memory and processing power, how would you speed it up? Logic cannot be simplified.
+Basic multi-threaded and concurrency problem
+26)In C, write a function that takes a 16 bit integer as input  and outputs it's ascii value?
+
+In C, write a function that performs exponential multiplication without the use of multiplication
+27) what is the difference between java and javascript
+what is function overloading and function overriding
+
+Describe the difference between Overriding a function and  Overloading a function.
+
+Function Overriding occurs when one class is inherited from another class. Overloaded functions must differ in either number of parameters or type of parameters should be different. In Overridden function parameters must be same
+
+what is Polymorphism
+what is the difference between abstract class and interface
+what is the difference between hashmap and hashtable
+what is the pass by value and pass by reference
+what is normalization
+Can a constructor have a return value
+Memory management in java
+explain MVC
+Do you know any team foundation server like svn, if so how would you merge your code?
+Do you know Maven
+Do you know Spring
+Do you know github, if so when did u use it?
+Explain private, protected, public nature.
+what is a virtual function
+
+28)How do you change a for loop to a while loop?
+29) Add a counter variable and then increment the counter variable at the end of the while loop.
+30)Define semaphore/mutex  
+31)How would you use a pointer in C? 
+32)Write some C code to take an array of numbers, go through the array, and double each odd number in the array.
+33)Follow-up to the above: How would you do this using bit-masking?  
+34) What is a pointer and when would you use one?  
+35) What is a thread ?
+36) What is the difference between a hashmap and a map?
+37) n c++ create a class hierarchy to classify numbers using an interface number. Define classes Real/Whole, and subclasses odd/even.
+For each integer 0-10 inclusive, insert them into an STL structure. Iterate through the STL structure and print out the number and what subclass it is.
+38) etermine whether a point(x,y) was inside or outside a  triangle defined by (x1,y1) (x2,y2) and (x3,y3)
+39) hat is the difference between a vector and a linked list?  
+40) What are linked lists, vectors and binary search trees optimized for?  
+41) What is the big O of finding an element in a vector and in a linked list?  
+42) What is the difference between heap and stack memory? 
+43)What is the difference between heap and stack memory?  
+44)What experience have you had with software development and testing?  
+45) What is meant by thread-safe?  
+46) Convert a given decimal number to hex.  
+47) Count the number of set bits in an integer
+-Find all odd values in the array and make them even (array and array length are arguments)
+--(Follow up) How would you do the previous question without a for loop?
+-Describe the purpose of a Semaphore
+-Describe how multi-threading works 
+48) What is the difference between a Hashmap and a Treemap?
+Basic differences include: Treemaps are ordered and must consist of comparable objects. You can construct a Treemap with a comparator so that objects are ordered in a specific way.
+Hashmaps consist of keys that are associated with some value. They allow fast addition and deletion of objects.
+49) How would you traverse a binary tree without recursion?
+Enqueue the root node.
+While the queue is nonempty:
+     Dequeue an element. Skip if visited. Mark it as visited otherwise. Read its value.
+     Do whatever you want with the value (print it, remember it elsewhere, ignore it, etc.).
+     Enqueue all its immediate neighbors.
+If you were searching for a specific element and you made it this far without finding it, it's not there.
+
+Dynamic memory Allocation in C
+==============================
+
+Malloc vs Calloc vs Realloc functions
+
+ 
+
+
+Malloc function is used to allocate memory dynamically it returns a void pointer
+
+
+void *malloc(size_t bytes);
+
+The Argument size determines number of bytes to be allocated, upon success malloc returns a pointer which points to the first byte of memory
+
+void *ptr;
+
+ptr = (int *)malloc(10);
+
+
+We use size of operator to make the program more usable and reliable 
+
+
+ptr = (int *)malloc(5*sizeof(int)); // For integer Datatype;
+
+similarly for float
+
+ptr = (float *)malloc(5*sizeof(float));
+
+
+Program to allocate the memory dynamically using malloc function:
+
+#include <stdio.h>
+#include<malloc.h>
+
+int main()
+
+{
+
+int i,n,*ptr;
+
+printf("\n Enter number of integers to be entered\n");
+
+scanf("%d",&n);
+
+ptr = (int *)malloc(n*sizeof(int));
+
+
+if(ptr == NULL)
+
+{
+printf("Sufficent memory is not available\n");
+
+return(1);
+}
+
+else if(ptr!=NULL)
+
+{
+printf("\n Enter the intergers : \n");
+for(i=0;i<n;i++)
+scanf("%d",ptr+i);
+
+}
+
+for(i=0;i<n;i++)
+
+printf("%d\t",*(ptr+i));
+
+
+return 0;
+
+}
+
+
+Calloc
+=======
+
+calloc function is used to allocate multiple blocks of memory 
+
+It is somewhat similar to the malloc function except it has two key differences.
+
+ - The first argument specifies how many blocs of memory will be initialized and second one gives how many blocks of memory will be initialized
+
+ void *calloc(n ,size_t size);
+
+when compared with malloc function 
+
+ptr = (int*)malloc(5* sizeof(int));
+here we are doing the arithematic but
+
+if we define like this
+
+ptr = (int *)calloc(5 , sizeof(int));
+
+Memmory allocated by Malloc function contains Garbage value whereas using calloc function memory is assigned to zero
+
+Like Malloc Calloc function also returns NUll if there is no sufficieint memory available
+
+
+Realloc
+=======
+
+We may want to increase or decrease the memory allocated by malloc or calloc functions then we go for realloc function
+
+Let say we allocated 5 blocks of memory using malloc 
+
+
+
+#include <stdio.h>
+#include<malloc.h>
+
+int main()
+
+{
+
+int i,*ptr;
+
+
+ptr = (int *)malloc(5*sizeof(int));
+
+
+if(ptr == NULL)
+
+{
+printf("Sufficent memory is not available\n");
+
+return(1);
+}
+
+else if(ptr!=NULL)
+
+{
+printf("\n Enter the 5 intergers : \n");
+for(i=0;i<5;i++)
+scanf("%d",ptr+i);
+
+}
+
+for(i=0;i<n;i++)
+
+printf("%d\t",*(ptr+i));
+
+
+return 0;
+
+}
+
+
+C++
+===
+
+C++ is object oreinted language
+
+It has features such as 
+
+1) Encapsulation
+
+2) Abstraction
+
+3) Data Hiding
+
+4) Polymorphism
+
+
+Control statements or Conditional statements
+
+a) Decision making Statements
+
+b) Selection statements (switch)
+
+a) If statement
+
+1) Simple If 
+
+2) if - else
+
+3) if -else -if
+
+4) nested if
+
+b) Switch
+
+switch uses 3 statements
+
+- switch
+- case
+- default
+
+Rules for Switch
+
+1) Duplicate cases not allowed
+
+2) Expression should be of type integer (inside expression)
+
+3) default can be written any where
+
+#include <iostream>
+using namespace std;
+
+int main() 
+
+{
+  float height,length,breadth,side,area,base;
+  float r,d1,d2;
+
+  int opt;
+
+  cout<<"\n Select 1 Area of the Rectangle";
+
+  cout<<"\n Select 2 Area of the Square";
+
+  cout<<"\n Select 3 Area of the Traingle";
+
+  cout<<"\n Select 4 Area of the Parallelogram";
+
+  cout<<"\n Select 5 Area of the Rhombus";
+    
+  cout<<"\n Select 6 Area of the Circle";
+
+  cout<<"\n Input your option \n ";
+
+  cin>>opt;
+
+  switch(opt)
+  {
+
+  case 1:
+   cout<<"\n Input length and breadth of the Rectangle\n";
+
+   cin>>length>>breadth;
+
+   area = length * breadth;
+  
+  cout<<"\n Area of the Rectangle is :"<<area;
+  break;
+
+  case 2:
+   cout<<"\n Input Side of the Sqaure \n";
+
+   cin>>side;
+
+   area = side * side;
+  
+  cout<<"\n Area of the Sqaure is :"<<area;
+  break;
+  
+   case 3:
+   cout<<"\n Input base and height of the Traingle \n";
+
+   cin>>base>>height;
+
+   area = 0.5*base* height;
+  
+  cout<<"\n Area of the traingle is :"<<area;
+  break;
+
+   case 4:
+   cout<<"\n Input base and height of the Parallelogram \n";
+
+   cin>>base>>height;
+
+   area = base* height;
+  
+  cout<<"\n Area of the Parallelogram is :"<<area;
+  break;
+
+  case 5:
+   cout<<"\n Input d1 and d2 of the Rhombus \n";
+
+   cin>>d1>>d2;
+
+   area = 0.5*d1* d2;
+  
+  cout<<"\n Area of the Rhombus is :"<<area;
+  break;
+
+  case 6:
+   cout<<"\n Input radius of the Circle \n";
+
+   cin>>r;
+
+   area = 3.14* r *r;
+  
+  cout<<"\n Area of the Circle is :"<<area;
+  break;
+  }
+
+return 0;
+
+}
+
+iterators
+==========
+
+1) Entry Control loop
+
+- for loop 
+
+- while 
+
+program to print numbers from 1-100
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+
+int num = 1;
+while(num<=100)
+{
+
+cout<<"\n"<<num;
+
+num++;
+
+}
+
+
+Program to find the cubes of the n natural numbers 
+==================================================
+#include<iostream>
+using namespace std;
+
+int main()
+{
+
+int num = 1,sum =0;
+
+while(num<=10)
+
+{
+
+sum =sum+(num*num*num);
+num = num+1;
+
+}
+
+cout<<"\n"<<sum;
+
+return 0;
+}
+
+
+Armstrong 
+=========
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+
+int num,sum = 0,r,num1;
+
+cout<<"\n Enter the desired number \n";
+
+cin>>num;
+
+num1 = num;
+
+while(num !=0)
+
+{
+r = num%10;
+sum =sum+(r*r*r);
+num = num/10;
+
+}
+
+if (num1 == sum)
+cout<<"\n The Entered number is a Armstrong number";
+
+else 
+
+cout<<"\n The Entered number is not a Armstrong number";
+
+
+
+
+return 0;
+}
+
+
+Palindrome
+==========
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+
+int num,sum = 0,r,rev =0,num1;
+
+cout<<"\n Enter the desired number \n";
+
+cin>>num;
+
+num1 = num;
+
+while(num !=0)
+
+{
+r = num%10;
+rev = (rev*10)+r;
+num = num/10;
+
+}
+
+if (num1 == rev)
+cout<<"\n The Entered number is a Palindrome number";
+
+else 
+
+cout<<"\n The Entered number is not a Palindrome number";
+
+
+return 0;
+}
+
+Prime Number
+============
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+int num,count =0,i=1;
+
+cout<<"\n Enter the desired number \n ";
+
+cin>>num;
+
+while(i<=num)
+{
+if(num % i == 0)
+count++;
+i =i+1;
+}
+
+if (count == 2)
+cout<<"\n Entered number is a Prime number";
+
+else
+
+cout<<"\n Entered number is not a  Prime number";
+
+return 0;
+}
+
+Factorial
+=========
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+int num,fact = 1;
+
+cout<<"\n Enter the desired number \n ";
+
+cin>>num;
+
+if (num == 0)
+{
+fact = num;
+cout<<"\n The Factorial of given number is"<< fact;
+}
+
+else
+{
+
+  while(num >= 1)
+{
+
+fact = fact * num;
+
+num--;
+}
+
+cout<<"\n The Factorial of given number is "<<fact;
+}
+return 0;
+}
+
+
+
+
+2) Exit control Loop
+
+do while ( See later)
+
+
+Enter name and 3 subject marks
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+
+char name[10];
+
+int subject[3],index =0;
+
+
+cout<<"Enter the Name \n ";
+
+cin>>name;
+
+cout<<" Enter subject Marks \n ";
+
+for(index = 0;index<3;index++)
+
+{
+cin>>subject[index];
+}
+
+cout<<"\n Name \n "<<name;
+
+for(index = 0;index<3;index++)
+{
+cout<<"\n "<<subject[index];
+}
+return 0;
+}
+
+****Array is an implicit pointer:*****
+=====================================
+
+Compiler is declaring it as a pointer but not the user
+
+Insert and print elements of an array of size n;
+
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+
+int a[10],n,i;
+
+cout<<"Enter the size of the array "<<endl;
+
+cin>>n;
+
+cout<<" Enter Array Elements"<< endl;
+
+for(i = 0;i<n;i++)
+
+{
+cin>>a[i];
+}
+
+cout<<"\n The Elements are \n "<<endl;
+
+for(i = 0;i<n;i++)
+{
+cout<<"\t "<<a[i];
+}
+return 0;
+}
+
+Random examples with arrays:
+============================
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+
+int a[10],n,i;
+
+cout<<"Enter the size of the array "<<endl;
+
+cin>>n;
+
+cout<<" Enter Array Elements"<< endl;
+
+for(i = 0;i<n;i++)
+
+{
+cin>>a[i];
+}
+
+cout<<"\n The Elements are \n "<<endl;
+
+for(i = 0;i<n;i++)
+{
+cout<<"\t "<<a[i];
+}
+cout<<"\n ";
+
+for(i = 0;i<=n+4;i++)
+{
+cout<<"\t "<<a[i];
+}
+
+return 0;
+}
+
+
+2 Dimensional Array:
+====================
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+
+int a[10][10],r,c,i,j;
+
+cout<<"Enter the number of rows "<<endl;
+
+cin>>r;
+
+cout<<"Enter the number of columns "<<endl;
+
+cin>>c;
+
+cout<<" Enter Array Elements"<< endl;
+
+for(i = 0;i<r;i++)
+{
+for(j =0;j<c;j++)
+{
+  cin>>a[i][j];
+}
+}
+
+cout<<" The Array Elements Matrix "<< endl;
+
+for(i = 0;i<r;i++)
+{
+for(j =0;j<c;j++)
+{
+  cout<<"\t"<<a[i][j];
+  //cout<<"\n";
+  //cout<<"\n";
+  
+}
+}
+
+return 0;
+}
+
+
+C++ program to Enter elements in to an array and add all even numbers and all odd numbers
+=========================================================================================
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+
+int a[5],i,even =0,odd=0;
+
+cout<<"Enter 5 elements in to an araay"<<endl;
+for(i = 0;i<5;i++)
+{
+
+cin>>a[i];
+if(a[i]%2==0)
+
+even +=a[i];
+
+else if(a[i]%2==1)
+
+odd +=a[i];
+
+}
+
+cout<<"The sum of even numbers is:"<<even<<endl;
+cout<<"The sum of odd numbers is:"<<odd;
+
+return 0;
+}
+
+
+C++ Program to convert Decimal to Binary:
+==========================================
+
+#include<iostream>
+using namespace std;
+
+int main()
+{
+
+int a[15],num,i,j;
+
+cout<<"Enter the Decimal number "<<endl;
+
+cin>>num;
+
+i = 0;
+
+while(num>0)
+{
+  a[i]=num%2;
+  num /=2;
+  i++;
+  
+}
+
+cout<<"The Binary Element is "<<endl;
+
+for(j=i-1;j>=0;j--)
+{
+  cout<<"\t"<<a[j];
+}
+
+return 0;
+}
+
+C++ program to enter elements in to a Matrix and print the elements in Matrix format
+====================================================================================
+
+#include <iostream>
+using namespace std;
+
+
+int main()
+{
+    int i, j, m, n;
+    int matrix[10][20];
+
+    cout<<"Enter number of rows : "<<endl;
+
+    cin>>m;
+
+    cout<<"Enter number of columns : "<<endl;
+    
+    cin>>n;
+
+    /* Input data in matrix */
+
+    cout<<"Enter elements in to the matrix : "<<endl;
+    for (i = 0; i < m; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            
+            cin>>matrix[i][j];
+        }
+    }
+
+    /* Display the matrix */
+    for (i = 0; i < m; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            cout<<"\t"<<matrix[i][j];
+        }
+        cout<<"\n";
+    }
+
+    return 0;
+}
+
+
+
+C++ program to print the elements of the matrix and add all the Daigonal Elements:
+==================================================================================
+
+#include <iostream>
+using namespace std;
+
+
+int main()
+{
+    int i, j, m, n,sum = 0;
+    int matrix[10][10];
+
+    cout<<"Enter number of rows : "<<endl;
+
+    cin>>m;
+
+    cout<<"Enter number of columns : "<<endl;
+    
+    cin>>n;
+
+    /* Input data in matrix */
+
+    cout<<"Enter elements in to the matrix : "<<endl;
+    for (i = 0; i < m; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            
+            cin>>matrix[i][j];
+        }
+    }
+
+    /* Display the matrix */
+    for (i = 0; i < m; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            cout<<"\t"<<matrix[i][j];
+        }
+        cout<<"\n";
+    }
+
+for (i = 0; i < m; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            if(i==j)
+
+            sum+= matrix[i][j];
+        }
+    }
+  
+  cout<<"\n The Sum of Daigonal Elements is "<<sum;
+  return 0;
+}
+
+
+
+
+For Dynamic memory allocation problems on arrays:--------> https://csegeek.com/csegeek/view/tutorials/cpp_lang/cpp_matrix.php
+=============================================================================================================================
+
+
+
+
+
+#include <iostream>
+
+using namespace std;
+namespace A{
+    int x=100;
+}
+namespace B{
+    int x=200;
+}
+
+int main()
+
+{ 
+
+int x =900;
+  int y = A::x + B::x + x;
+   // cout<<"Hello World"<<endl;
+    cout<<y<<endl;
+    return 0;
+}
+
+
+Tasks 1 :-
+
+ 1.Definations and Declaration in C/C++
+ 
+ int a; // Declaration of a variable is informing the compiler the following information : name of the variable, type of the value it holds
+ when we write int a that means its declaration and definition both 
+
+ 
+ add(int a,int b);
+ 
+ This notation is just declaration 
+ 
+ add(int ,int );//This is defination 
+ {
+ 
+ result = a+b;
+ 
+ return result;
+ 
+ }
+ 
+ Declaration and Defination Difference:
+ =======================================
+ 
+ Declaration                                    vs                                Defination 
+
+A variable of a function can be declared                     A variable or a function can be defined only once
+number of times     
+
+Memory will not be allocated during declaration              Memory will be allocated during defination 
+
+
+int f(int);
+
+The above is a function declaration.                           By seeing the function defication memory will be allocated
+
+This declaration is just for informing the compiler 
+that a function named f with return type                                            
+ 
+ 
+ 
+ 2.Storage Classes == Done
+ 3.Compilation Stages in detail == Done
+ 4.Menory Layout in C/C++ == Done
+ 
+ Tasks 2 :
+ 
+ Radiology : 214-645-9729 3030 Waterview Pkwy, Richardson, TX 75080 == Done
+ 
+ 1) CPP Basics == Done
+ 2)practise class -how to access class 
+ 3)objects
+ 
+  
+  MOn- Friday - 5 days - 1.5 hour - 7.5 hours - 2.5 hours - 10 hours week 
+  
+  MOn - 1.5 hours
+  
+
+Function Defination outside of the class
+========================================
+
+Whenever we are defining the member function outside of the class 
+
+then we have to use scope resolution operator ::
+
+  class A
+{
+  public:
+  
+  int id;
+  char name[20];
+  float fee;
+  
+  public :
+  
+  void get();//declaration.
+  void print();
+ };
+ void A::print(){
+     
+   cout<<"ID ="<<id<< endl;
+     cout<<"Name ="<<name<< endl;
+     cout<<"Fee ="<<fee<< endl;    
+     
+ }
+void A::get(){
+    
+    cout<<"Enter id "<<endl<<"name "<<endl<<"fee"<<endl;
+     cin>>id>>name>>fee;
+     cout<<"ID ="<<id<< endl;
+     cout<<"Name ="<<name<< endl;
+     cout<<"Fee ="<<fee<< endl; 
+    
+}
+int main()
+{
+
+    A a1,a2;
+    a1.get();//function call
+    a2.id=100;
+    a1.print();
+    cout<<"object two"<<endl;
+  
+
+In C++ we can add two strings str1+str2 as we are using library function string.h
+
+  Program 2 :
+  
+  
+#include<iostream>
+#include<string>
+using namespace std;
+int main()
+{
+     int a=10;
+     string str1="Hello c++";
+     string str2="Rizwan";
+     string str3;
+     str3=str1+str2;
+     std::cout<<"Value of str is "<<str3<<std::endl;
+    return 0;
+}
+
+Program 3 : With \0
+
+When we are printing the string size it will neglect any character that is present after back slash 0 (\0)
+
+hence upon doing sizeof(str3) the value is :15
+
+#include <stdio.h>
+#include<iostream>
+#include<string>
+using namespace std;
+int main()
+{
+     int a=10;
+     string str1="Hello\0 c++";
+     string str2="Rizwan";
+     string str3;
+     str3=str1+str2;
+     std::cout<<"Value of str is "<<str3.size()<<str1<<std::endl;
+    return 0;
+}
+
+Program 4 : Accessing Global Variables
+
+When we are accessing global variables we need to use :: scope operator and the variable name 
+#include <stdio.h>
+#include<iostream>
+#include<string>
+using namespace std;
+int x =10;
+int main()
+{
+     int x=20;
+     cout <<::x<<endl;
+    return 0;
+
+}
+
+
+Reference 
+==========
+
+Reference is  alias name of a variable
+
+Rules for References
+
+References variables have to be initialized for ex: 
+
+int a = 100;
+
+int &b =a;
+
+int &c = 10000 is wrong as there is no reference for constants
+
+One variable can have many references 
+
+-Refrence Variable has to be initialized
+-Refrences are not possible for constants &z = 1000 0r any constant is false
+-One Varible can have multiple refrences
+ 
+ Program 5 : Pass by reference example
+ -------------------------------------
+ 
+We implemented pass by reference by having a Prototype function which takes arguments as reference variables 1 and 2
+
+and manupulates the variable 1 by adding 10 and second variable by 10
+
+When ever there is function call using the prototype function the native variables are stored or assigned the respective references and the modification written in function is applied to them
+
+
+ #include<string>
+using namespace std;
+void print(int&,int&);
+int main()
+{
+     int x=20;
+     int y=1000;
+     
+     cout <<x<<" "<< y<<endl;
+     print(x,y);
+     cout <<x<<" "<<y<<endl;
+    return 0;
+
+}
+void print(int&a,int&b){
+
+   a=a+10;
+   b=b+10;
+    
+}
+
+Practiced :
+==========
+
+#include<iostream>
+using namespace std;
+
+void print(int &,int &);
+
+int main()
+ {
+
+   int x = 20;
+   int y = 100;
+
+   cout<<"Before using Reference"<<endl;
+ 
+   cout<< x<<" "<<y<<endl;
+   
+ 
+   
+   cout<<"After using Reference"<<endl;
+
+   print(x,y);
+
+   cout<< x<<" "<<y<<endl;
+
+   return 0;
+}
+
+void print(int &a,int &b)
+{
+  a = a+10;
+  b = b+10;
+
+} 
+
+Pass by Value :-
+=================
+
+#include<iostream>
+using namespace std;
+
+int temp=0;
+
+void swap(int ,int );
+
+int main()
+ {
+
+   int a = 20;
+   int b = 100;
+   
+    cout<<"Before Passing by Address"<<endl;
+    
+    cout<< a<<" "<<b<<endl;
+    
+ 
+  
+   cout<<"After Passing by Address"<<endl;
+  
+   swap(a,b);
+  
+
+   return 0;
+}
+
+void swap(int x,int y)
+
+{
+  temp = x;
+  x = y;
+  y = temp;
+  
+  
+   cout<< x<<" "<< y<<endl;
+   
+  
+}
+
+Passing By address :-
+=====================
+
+#include<iostream>
+using namespace std;
+
+int temp=0;
+
+void swap(int *,int *);
+
+int main()
+ {
+
+   int a = 20;
+   int b = 100;
+   
+    cout<<"Before Passing by Address"<<endl;
+    
+    cout<< a<<" "<<b<<endl;
+    
+    //cout<< &a<<" "<<&b<<endl;
+  
+   cout<<"After Passing by Address"<<endl;
+  
+   swap(&a,&b);
+  
+
+   return 0;
+}
+
+void swap(int *x,int *y)
+
+{
+  temp = *x;
+  *x = *y;
+  *y = temp;
+  
+  
+   cout<< *x<<" "<< *y<<endl;
+   
+  
+}
+
+ Pass by Reference and printing address of variables( Result to show that it holds same address)
+===========================================================================================================
+
+#include<iostream>
+#include<string>
+using namespace std;
+void print(int&,int&);
+int main()
+{
+     int x=20;
+     int y=1000;
+     
+     cout <<x<<" "<< y<<endl;
+     print(x,y);
+     cout <<x<<" "<<y<<endl;
+     cout <<&x<<" "<<&y<<endl;
+    return 0;
+
+}
+void print(int& a,int& b){
+
+   a=a+10;
+   b=b+10;
+   cout<<&a<<" "<<&b<<endl;
+   cout<<a<<b<<endl;
+  
+}
+
+Passing by Reference:-( Swap Program)
+======================
+
+
+
+#include<iostream>
+using namespace std;
+
+int temp=0;
+
+//void swap(int &,int &);
+
+int main()
+ {
+
+   int a = 20;
+   int b = 100;
+   
+    cout<<"Before Passing by Reference "<<endl;
+    
+    cout<< a<<" "<<b<<endl;
+    
+    //cout<< &a<<" "<<&b<<endl;
+  
+   cout<<"After Passing by Reference "<<endl;
+  
+   swap(a,b);
+  
+
+   return 0;
+}
+
+void swap(int &x,int &y)
+
+{
+  temp = x;
+  x = y;
+  y = temp;
+  
+  
+   cout<< x<<" "<< y<<endl;
+   
+  
+}
+
+Advantages of Reference vs Pointers :-
+======================================= 
+
+- A reference is same object with a different name ( it is an alias of a variable)
+
+- A reference is initialized only once whereas pointers can be re-initialized 
+- A pointer can be assigned to NULL whereas references cannot 
+- Pointers can iterate over an array by using ++ to go to the next item where the pointer is pointing 
+- A pointer is a variable that holds a memory address whereas reference has same memory address
+- A pointer to class/structure uses -> arrow operator whereas reference uses dot (.)operator 
+- A pointer has to be deferenced i.e * has to used to get the value whereas reference can be accessed directly 
+
+
+
+#include <iostream> 
+using namespace std; 
+  
+struct demo 
+{ 
+    int a; 
+}; 
+  
+int main() 
+{ 
+    int x = 5; 
+    int y = 6; 
+    demo d; 
+      
+    int *p; 
+    p =  &x; 
+    p = &y;                     // 1. Pointer reintialization allowed 
+    int &r = x; 
+    // &r = y;                  // 1. Compile Error 
+    r = y;                      // 1. x value becomes 6 
+      
+    p = NULL;            
+    // &r = NULL;               // 2. Compile Error 
+      
+    p++;                        // 3. Points to next memory location 
+    r++;                        // 3. x values becomes 7 
+      
+    cout << &p << " " << &x << endl;    // 4. Different address 
+    cout << &r << " " << &x << endl;    // 4. Same address 
+      
+    demo *q = &d; 
+    demo &qq = d; 
+      
+    q->a = 8; 
+    // q.a = 8;                 // 5. Compile Error  
+    qq.a = 8; 
+    // qq->a = 8;               // 5. Compile Error 
+      
+    cout << p << endl;        // 6. Prints the address 
+    cout << r << endl;        // 6. Print the value of x     
+  
+    return 0; 
+} 
+
+972-372-1157
+
+
+
+Function Overloading :
+=====================
+
+
+Function overloading is a feature in C++ wherein two or more functions have same name but differ in either in number or arguments or type of arguments
+
+1) Based on Type of Arguments
+
+2) Based on number of Arguments
+
+3) Order of the Arguments
+
+
+
+1) Based on type of Arguments:
+==============================
+
+#include<iostream>
+using namespace std;
+
+void sawp(int &arg1,int &arg2)
+{
+  int temp = 0;
+
+  temp = arg1;
+  arg1 = arg2;
+  arg2 = temp;
+
+}
+
+void swap(float &arg1 ,float &arg2)
+{
+  float temp = 0.0f;
+
+  temp = arg1;
+  arg1 = arg2;
+  arg2 = temp;
+}
+
+void swap(double &arg1 , double &arg2)
+{
+  double temp = 0.0;
+
+  temp =arg1;
+  arg1 =arg2;
+  arg2 =temp;
+}
+
+void swap(char &arg1,char &arg2)
+{
+  char temp = 0;
+
+  temp = arg1;
+  arg1 = arg2;
+  arg2 = temp;
+}
+
+
+int main()
+{
+    int I1 = 10,I2 =15;
+    float F1 = 12.6,F2 = 13.4;
+    double D1 = 0.6,D2 = 0.4;
+    char C1 = 'A',C2 ='B';
+  
+   cout<<" The value of variables Before Swapping is "<<endl;
+   cout<<"I1:"<<I1<<endl;
+   cout<<"I2:"<<I2<<endl;
+   cout<<"F1:"<<F1<<endl;
+   cout<<"F2:"<<F2<<endl;
+   cout<<"D1:"<<D1<<endl;
+   cout<<"D2:"<<D2<<endl;
+   cout<<"C1:"<<C1<<endl;
+   cout<<"C2:"<<C2<<endl;
+
+    swap(I1,I2);
+    swap(F1,F2);
+    swap(D1,D2);
+    swap(C1,C2);
+
+     cout<<" The value of variables After Swapping is "<<endl;
+   cout<<"I1:"<<I1<<endl;
+   cout<<"I2:"<<I2<<endl;
+   cout<<"F1:"<<F1<<endl;
+   cout<<"F2:"<<F2<<endl;
+   cout<<"D1:"<<D1<<endl;
+   cout<<"D2:"<<D2<<endl;
+   cout<<"C1:"<<C1<<endl;
+   cout<<"C2:"<<C2<<endl;
+
+    return 0;
+}
+
+2) Based on the number of Arguments:
+====================================
+
+#include<iostream>
+using namespace std;
+
+void sawp(int &arg1,int &arg2)
+{
+  int temp = 0;
+
+  temp = arg1;
+  arg1 = arg2;
+  arg2 = temp;
+
+}
+
+void swap(int &arg1 ,int &arg2, int &arg3)
+{
+  int temp = 0;
+
+  temp = arg1;
+  arg1 = arg2;
+  arg2 = arg3;
+  arg3 = temp;
+}
+
+
+int main()
+{
+    int I1 = 10,I2 =15;
+    int I3 = 12, I4 = 13,I5 = 3;
+    
+  
+   cout<<" The value of variables Before Swapping is "<<endl;
+   cout<<"I1:"<<I1<<endl;
+   cout<<"I2:"<<I2<<endl;
+   cout<<"I3:"<<I3<<endl;
+   cout<<"I4:"<<I4<<endl;
+   cout<<"I5:"<<I5<<endl;
+   
+
+    swap(I1,I2);
+    swap(I3,I4,I5);
+    
+
+     cout<<" The value of variables After Swapping is "<<endl;
+   cout<<"I1:"<<I1<<endl;
+   cout<<"I2:"<<I2<<endl;
+   cout<<"I3:"<<I3<<endl;
+   cout<<"I4:"<<I4<<endl;
+   cout<<"I5:"<<I5<<endl;
+
+    return 0;
+}
+
+
+3) Based on the Order of Arguments:
+==================================
+
+
+#include<iostream>
+using namespace std;
+
+void swap(int &arg1,int &arg2)
+{
+  int temp = 0;
+
+  temp = arg1;
+  arg1 = arg2;
+  arg2 = temp;
+
+}
+
+void swap(float &arg1,float &arg2, int &arg3)
+  
+  {
+  int temp = 0;
+
+  temp = arg1;
+  arg1 = arg2;
+  arg2 = arg3;
+  arg3 = temp;
+  
+}
+
+
+int main()
+{
+    int I1 = 10,I2 =15;
+    float I3 = 12, I4 = 13;
+    int I5 = 3;
+    
+  
+   cout<<" The value of variables Before Swapping is "<<endl;
+   cout<<"I1:"<<I1<<endl;
+   cout<<"I2:"<<I2<<endl;
+   cout<<"I3:"<<I3<<endl;
+   cout<<"I4:"<<I4<<endl;
+   cout<<"I5:"<<I5<<endl;
+   
+
+    swap(I1,I2);
+    swap(I3,I4,I5);
+    
+
+     cout<<" The value of variables After Swapping is "<<endl;
+   cout<<"I1:"<<I1<<endl;
+   cout<<"I2:"<<I2<<endl;
+   cout<<"I3:"<<I3<<endl;
+   cout<<"I4:"<<I4<<endl;
+   cout<<"I5:"<<I5<<endl;
+
+    return 0;
+}
+
+In this example we have seen that a function can also be overloaded by changing the order of the Arguments
+
+Hence a function can be overloaded either by type of the arguments,number of the arguments or type of the arguments but it does not depends on the return type i.e it can not be overloaded by changing the return type
+
+
+
+#include<iostream>
+using namespace std;
+
+void print(int a)
+{
+    
+    cout<<"Value of a is "<<a<<endl;
+}
+
+void print(int a, int b)
+{
+    cout<<"Value of a is"<<a<<endl<<"Value of b is"<<b<<endl;
+}
+int main()
+{
+    int x = 5;
+    int y = 6;
+  print(x);  
+  print(x,y);
+    return 0;
+}
+
+The function Overloading Depends on
+
+- No of Arguments 
+- Type of Arguments .
+- Does not depend on the return Type
+- Function Overloading Depends on Order of Arguments
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Day 6 
+
+Default Arguments
+=================
+
+C++ has a provision of initializing the arguments when they are decalred in a function this are known as default arguments 
+
+Defaulf Arguments in C++
+
+- Default Arguments are only present in C++ but not in C
+
+#include<iostream>
+using namespace std;
+
+float  swap(int a=10,int b =21 ,int c=30)
+{
+  
+return static_cast<float>(a+b+c)/3;
+
+}
+
+
+
+
+int main()
+{
+    int I1 ,I2,I3 ;
+    
+   cout<<"The average of var1 var 2 and var 3 is:"<<swap()<<endl;
+    return 0;
+}
+
+
+#include <iostream>
+
+using namespace std;
+void print(int a,int b=200){
+cout<<a<<" "<<b <<endl;
+}
+int main()
+{
+    cout << "Hello world!" << endl;
+    print(10);
+    return 0;
+}
+
+Points to be noted while using default Arguments: 
+
+- Pass atleast one value in case of two input
+- Always Argumnets have to be passsed from Right to left 
+
+#include <iostream>
+
+using namespace std;
+void print(int a=1000,int b){
+cout<<a<<" "<<b <<endl;
+}
+int main()
+{
+    cout << "Hello world!" << endl;
+    print();
+    return 0;
+}
+
+
+#include <iostream>
+
+using namespace std;
+void print(int a=100,bool door=false)
+{
+if (door)
+{
+ cout<<a<<endl;
+}
+else
+{
+  cout<<"Access Denied"<<endl;
+}
+}
+int main()
+{
+    print(100);
+    return 0;
+}
+
+
+
+
+Rules for Default arguments:
+============================
+
+1) The Arguments has to be passed from right to left
+2) Always default arguments must be terminal elements
+3)If user has given one argument as default among the 3 arguments then user has to call by passing the remaining to arguments
+
+
+
+Inline Functions
+=================
+
+
+In general when program executes function call the arguments are stored in stack and the return value is also assigned a memory once the function is executed the corresponding variables are 
+destroyed and the control is passed back 
+
+In case the function execution time < Function Switching time  it is not advisable to use function calling rather Inline functions can be used 
+
+
+-Inline function is alternative to macro handling in C programming
+-Inline function is introducedto increase the speed of the function execution
+-When we decalre any function as inline the defination is inserted directly as it is directly invoked during the start of the Program
+
+ 
+
+
+#include<iostream>
+using namespace std;
+
+inline void swap(int &arg1,int &arg2)
+{
+  int temp = 0;
+
+  temp = arg1;
+  arg1 = arg2;
+  arg2 = temp;
+
+}
+
+inline void swap(float &arg1,float &arg2, int &arg3)
+  
+  {
+  int temp = 0;
+
+  temp = arg1;
+  arg1 = arg2;
+  arg2 = arg3;
+  arg3 = temp;
+  
+}
+
+
+int main()
+{
+    int I1 = 10,I2 =15;
+    float I3 = 12, I4 = 13;
+    int I5 = 3;
+    
+  
+   cout<<" The value of variables Before Swapping is "<<endl;
+   cout<<"I1:"<<I1<<endl;
+   cout<<"I2:"<<I2<<endl;
+   cout<<"I3:"<<I3<<endl;
+   cout<<"I4:"<<I4<<endl;
+   cout<<"I5:"<<I5<<endl;
+   
+
+    swap(I1,I2);
+    swap(I3,I4,I5);
+    
+
+     cout<<" The value of variables After Swapping is "<<endl;
+   cout<<"I1:"<<I1<<endl;
+   cout<<"I2:"<<I2<<endl;
+   cout<<"I3:"<<I3<<endl;
+   cout<<"I4:"<<I4<<endl;
+   cout<<"I5:"<<I5<<endl;
+
+    return 0;
+}
+
+
+Dynamic Memory Allocation in C++
+================================
+
+Dynamic Memory Allocation
+Allocating memory
+
+There are two ways that memory gets allocated for data storage:
+
+Compile Time (or static) Allocation
+====================================
+
+Memory for named variables is allocated by the compiler
+Exact size and type of storage must be known at compile time
+For standard array declarations, this is why the size has to be constant
+
+Dynamic Memory Allocation
+===========================
+Memory allocated "on the fly" during run time
+dynamically allocated space usually placed in a program segment known as the heap or the free store
+Exact amount of space or number of items does not have to be known by the compiler in advance.
+For dynamic memory allocation, pointers are crucial
+
+Dynamic Memory Allocation
+==========================
+We can dynamically allocate storage space while the program is running, but we cannot create new variable names "on the fly"
+For this reason, dynamic allocation requires two steps:
+
+Creating the dynamic space.
+Storing its address in a pointer (so that the space can be accesed)
+
+To dynamically allocate memory in C++, we use the new operator.
+De-allocation:
+Deallocation is the "clean-up" of space being used for variables or other data storage
+
+Compile time variables are automatically deallocated based on their known extent (this is the same as scope for "automatic" variables)
+
+It is the programmer's job to deallocate dynamically created space
+To de-allocate dynamic memory, we use the delete operator
+
+Allocating space with new
+
+To allocate space dynamically, use the unary operator new, followed by the type being allocated.
+
+ new int;        // dynamically allocates an int 
+ new double;     // dynamically allocates a double
+
+If creating an array dynamically, use the same form, but put brackets with a size after the type:
+ new int[40];      // dynamically allocates an array of 40 ints 
+ new double[size]; // dynamically allocates an array of size doubles
+                   //  note that the size can be a variable
+
+These statements above are not very useful by themselves, because the allocated spaces have no names! BUT, the new operator returns the starting address of the allocated space, and this address can be stored in a pointer:
+
+ int * p;        // declare a pointer p 
+ p = new int;    // dynamically allocate an int and load address into p 
+
+ double * d;     // declare a pointer d 
+ d = new double; // dynamically allocate a double and load address into d 
+
+ // we can also do these in single line statements 
+ 
+int x = 40;
+
+ int * list = new int[x];
+ float * numbers = new float[x+10];
+
+Notice that this is one more way of initializing a pointer to a valid target (and the most important one).
+
+Accessing dynamically created space
+So once the space has been dynamically allocated, how do we use it?
+
+For single items, we go through the pointer. Dereference the pointer to reach the dynamically created target:
+  int * p = new int;	// dynamic integer, pointed to by p
+
+  *p = 10;		// assigns 10 to the dynamic integer
+  cout << *p;		// prints 10
+
+For dynamically created arrays, you can use either pointer-offset notation, or treat the pointer as the array name and use the standard bracket notation:
+  double * numList = new double[size];	// dynamic array
+
+  for (int i = 0; i < size; i++)
+      numList[i] = 0;			// initialize array elements to 0
+
+  numList[5] = 20;			// bracket notation
+  *(numList + 7) = 15;			// pointer-offset notation
+					//   means same as numList[7]
+Deallocation of dynamic memory
+To deallocate memory that was created with new, we use the unary operator delete. The one operand should be a pointer that stores the address of the space to be deallocated:
+  int * ptr = new int;		// dynamically created int
+  // ...
+  delete ptr;			// deletes the space that ptr points to
+Note that the pointer ptr still exists in this example. That's a named variable subject to scope and extent determined at compile time. It can be reused:
+  ptr = new int[10];		// point p to a brand new array
+To deallocate a dynamic array, use this form:
+  delete [] name_of_pointer;
+Example:
+  int * list = new int[40];	// dynamic array
+
+  delete [] list;		// deallocates the array
+  list = 0; 			// reset list to null pointer
+After deallocating space, it's always a good idea to reset the pointer to null unless you are pointing it at another valid target right away.
+ 
+To consider: So what happens if you fail to deallocate dynamic memory when you are finished with it? (i.e. why is deallocation important?)
+
+Application Example: Dynamically resizing an array
+If you have an existing array, and you want to make it bigger (add array cells to it), you cannot simply append new cells to the old ones.  Remember that arrays are stored in consecutive memory, and you never know whether or not the memory immediately after the array is already allocated for something else.   For that reason, the process takes a few more steps.  Here is an example using an integer array.  Let's say this is the original array:
+ int * list = new int[size]; 
+I want to resize this so that the array called list has space for 5 more numbers (presumably because the old one is full). 
+There are four main steps.
+
+Create an entirely new array of the appropriate type and of the new size. (You'll need another pointer for this).
+ int * temp = new int[size + 5]; 
+Copy the data from the old array into the new array (keeping them in the same positions). This is easy with a for-loop.
+ for (int i = 0; i < size; i++) 
+    temp[i] = list[i]; 
+Delete the old array -- you don't need it anymore! (Do as your Mom says, and take out the garbage!)
+ delete [] list;  // this deletes the array pointed to by "list" 
+Change the pointer. You still want the array to be called "list" (its original name), so change the list pointer to the new address.
+ list = temp; 
+
+That's it! The list array is now 5 larger than the previous one, and it has the same data in it that the original one had. But, now it has room for 5 more items.
+
+#include<iostream>
+using namespace std;
+
+
+
+int main()
+{
+    int *ptr = new int[5];
+    
+
+for(int i=0;i<5;i++)
+    {
+
+      ptr[i] = i*20;
+
+   cout<<" "<<ptr[i]<<endl;
+   
+    }
+
+int *list = new int[10];
+
+ for(int i=0;i<5;i++)
+    {
+
+      list[i] = ptr[i];
+    }
+delete [] ptr;
+
+for(int i=0;i<10;i++)
+    {
+		cout<<" "<<list[i]<<endl;
+   
+    }
+
+    return 0;
+}
+
+New and Delete Operators in C++
+int main()
+{
+    int *p=NULL;
+     p=new int;
+    if(p)
+    *p=1000;
+       cout<<*p<<endl;
+    cout<<p<<endl;
+       delete p;
+    //print(100);
+    return 0;
+}
+
+Day 7:
+
+#include <stdio.h>
+#include<stdlib.h>
+
+
+int main(){
+  static int cout=0;
+  printf("Main function\n");
+cout++;
+if(cout==5)
+return 0;
+main();
+
+    //print(100);
+    return 0;
+}
+
+Day 8:
+
+class test
+{
+
+static int a;
+
+}
+
+int test :: a = 10;
+
+int main ()
+
+cout<< "The Value of a is "<< a<<endl;
+
+
+
+
+When a non-static member is declared in the class and when ever the objects are created, when non-static member is initialized it is held private corresponding to the individual object 
+
+
+Obj1                 Obj2                      Obj 3
+ 
+a = 10;     |       a = 15;                | a =30  
+
+
+When ever the data member is static it is common to the class 
+
+Hence Static is class member and not the object member 
+
+Static members are common to all the objects as it is a class member 
+
+
+
+
+
+
+Static variable initialization:
+
+after declaration write outside the class ,
+
+return type class_name:: variable name;
+int A::x;
+
+
+Friend functions
+
+
+#include <iostream>
+
+using namespace std;
+class A{
+private:
+
+ int x;
+
+public:
+
+friend void show(A a);
+
+};
+
+void show(A a){
+    a.x=100;
+    cout<<"the value of x is "<<a.x<<endl;
+}
+
+int main()
+{
+A a;
+
+ show(a);
+
+    return 0;
+}
+
+Friend function example :
+
+
+#include <iostream>
+
+using namespace std;
+
+
+class husband
+{
+    private:
+    
+    char name[10];
+    int salary;
+    
+    public:
+    
+    void set_data()
+    
+    {
+        cout<<"Enter Name"<<endl;
+        cin>>name;
+        cout<<"Enter the Salary"<<endl;
+         cin>>salary;
+    }
+    
+    void get_data()
+    {
+
+        cout<<" Name is"<<name<<endl;
+        cout<<"The Salary is"<<salary<<endl;
+        
+    }
+    friend int totalsalary(husband h1,wife w1);
+    
+};
+
+class wife
+{
+    private:
+    
+    char name[10];
+    int salary;
+    
+    public:
+    
+    void set_data()
+    {
+        cout<<"Enter Name"<<endl;
+        cin>>name;
+        cout<<"Enter the Salary"<<endl;
+         cin>>salary;
+    }
+    
+    void get_data()
+    {
+
+        cout<<" Name is"<<name<<endl;
+        cout<<"The Salary is"<<salary<<endl;
+        
+    }
+    friend int totalsalary(husband h1,wife w1);
+};
+    
+    int totalsalary(husband h1,wife w1)
+    {
+    
+        
+     return h1.salary + w1.salary;
+        
+    
+    }
+int main()
+{
+  husband a1;
+  wife a2;
+  a1.set_data();
+  a1.get_data();
+  a2.set_data();
+  a2.get_data();
+  cout<<"TotalSalary "<<totalsalary(a1,a2)<<endl;
+    return 0;
+}
+
+
+#include <iostream>
+using namespace std;
+class girl;
+class boy
+{
+    private:
+    
+    int income1;
+    int income2;
+    
+    public:
+    
+    void set_data()
+    {
+        cout<<"Enter income1"<<endl
+        cin<<income1;
+        cout<<"Enter income2"<<endl
+        cin<<income2;
+        
+    }
+    
+void Get_data();
+friend class girl;
+
+};
+
+void boy ::Get_data()
+{
+     cout<<"Salary from first source is"<<income1<<endl;
+        
+     cout<<"Salary from second source is"<<income2<<endl;
+}
+
+};
+
+class girl
+
+{
+ 
+    public:
+    
+    void printdata(boy b)
+    {
+       cout<<"Girl class printing "<<endl;
+       cout<<b.income1 <<"  "<<b.income2<<endl;
+        
+    }
+    
+    void modify_data(boy b1){
+    
+    b1.income1=b1.income1+10000;
+    b1.income2=b1.income2+2000;
+    
+}
+
+};
+
+void boy ::Get_data()
+{
+     cout<<"Salary from first source is"<<income1<<endl;
+        
+     cout<<"Salary from second source is"<<income2<<endl;
+}
+
+int main()
+
+{
+    boy a1;
+    girl g1;
+    a1.set_data();
+    a1.Get_data();
+    cout<<"After friend changes"<<endl;
+    g1.printdata(a1);
+    g1.modify_data(a1);
+    a1.Get_data();
+    return 0;
+
+}
+
+/******************************************************************************
+Friend class :
+
+
+#include <iostream>
+using namespace std;
+class Girl;
+
+class Boy
+{
+    private:
+    
+    int income1;
+    int income2;
+    
+    public:
+    
+	Boy()
+	{ 
+		cout<<"Enter income1"<<endl;
+        cin>>income1;
+        cout<<"Enter income2"<<endl;
+        cin>>income2;
+      
+    }
+    void get_data()
+    {
+        cout<<"Salary from first source is"<<income1<<endl;
+        
+       cout<<"Salary from second source is"<<income2<<endl;        
+    }
+    
+friend class Girl;
+
+};
+
+
+class girl
+
+{
+     public:
+    
+	Girl(){}
+    
+	Girl(Boy &b)
+    {
+       cout<<"Girl class printing "<<endl;
+        
+		b.income1= b.income1+10000;
+		b.income2= b.income2+2000;
+		
+		cout << b.income1 << endl;
+		cout<<  b.income2 << endl;
+    }
+
+};
+
+int main()
+
+{
+    Boy a1;
+    a1.get_data();
+    
+	cout<<"After friend changes"<<endl;
+	
+	Girl g1(a1);
+	
+    a1.Get_data();
+	
+    return 0;
+
+}
+
+Types of Constructors :
+
+1) Default Constructors
+2) Paramaeterized Constructors
+3) Copy Constructors
+4) Dynamic Contrcutor
+
+
+Constructor is a special member  function whose task is to initialize the object of its class
+
+These are special because they have the name same as the class name 
+
+constructor is invoked or called when ever object is created
+
+When a class contains constructor that means whenever object is created it will be initilized.
+
+class add{};
+add a;
+
+//There is no need to invoke the constructor function
+
+The constructor which takes no arguments is called default constructor 
+add::add()
+
+They should be declared in public section 
+
+They are invoked as soon as objects are created 
+
+constructors dont have return type
+
+they cannot be inherited
+
+constructor cannot be virtual 
+
+
+Parameterized constructor :
+
+Rules:
+
+1) When constructor is parameterized we need to pass the intial values as arguments 
+2) Base class has to be intialized with default constructor when object is created.
+3) Constructor 
+
+#include <iostream>
+using namespace std;
+
+class add
+{
+    private:
+    int m;
+    int n;
+    int z;
+    public:
+    
+    add()
+    {
+        
+    }
+    
+    /*add(int a,int b)
+    {
+        m = a;
+        n = b;
+        
+    //    cout<<"I'm a Parametrized constructor"<<endl;
+        
+    }*/
+
+
+    add(int a,int b,int c=200)
+    {
+      m=a;
+      n=b;
+      z=c;
+
+    }
+        
+    void get_data()
+    {
+        cout<<"The value of m is "<<m<<endl;
+        cout<<"The value of n is "<<n<<endl;
+        cout<<"The value of z is "<<z<<endl;
+    }
+    
+};
+
+int main()
+{
+    
+add a1(5,4),a3(900,67);
+add a2(100,200);
+a1.get_data();
+a2.get_data();
+a3.get_data();
+add a4(30,40,50),a5(60,70,80);
+a4.get_data();
+a5.get_data();
+
+   return 0;
+}
+
+Copy constructor :
+-------------------
+
+#include <iostream>
+using namespace std;
+
+class add
+{
+    private:
+    int m;
+    int n;
+    int z;
+    public:
+    
+    add()
+    {
+        m=n=z=0;
+    }
+    
+    add(add &b)
+    {
+        m = b.m;
+        n = b.n;
+        z= b.z;
+        
+    //    cout<<"I'm a Parametrized constructor"<<endl;
+        
+    }
+
+
+    add(int a,int b,int c=200)
+    {
+      
+      m=a;
+      n=b;
+      z=c;
+
+    }
+        
+    void get_data()
+    {
+        cout<<"The value of m is "<<m<<endl;
+        cout<<"The value of n is "<<n<<endl;
+        cout<<"The value of z is "<<z<<endl;
+    }
+    
+};
+
+int main()
+{
+    
+  add a1(5,4),a3(900,67),a8(a1);
+  add a2(100,200);
+  a1.get_data();
+  a2.get_data();
+  a3.get_data();
+  a8.get_data();
+
+   return 0;
+}
+ 
+
+Assigment Operator Overloading 
+===============================
+
+Ex:1 
+====
+#include<iostream>
+using namespace std;
+
+class Test 
+{
+    public:
+    
+    int *ptr;
+    
+    Test(int i = 0)
+    {
+        ptr = new int(i);
+    }
+    
+    void set(int i)
+    {
+        *ptr = i;
+    }
+    
+    void print()
+    {
+        cout << *ptr << endl;
+    }
+    
+    Test & operator = (const Test &t)
+    {
+        if(this!=&t)
+        *ptr = *(t.ptr);
+        
+        return *this;
+    }
+};
+
+int main()
+{   
+    Test t1(5);
+    
+    cout <<"The Assigned Value of Ptr " <<  *(t1.ptr) << endl;
+    
+    Test t2;
+    
+    t2 = t1;
+    
+    t2.print();
+    t1.print();
+    
+    t1.set(10);
+    
+    t1.print();
+    
+    t2.print();
+    
+    return 0;
+}
+
+Ex : 2 
+======
+
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+class String 
+{
+    public:
+    
+    char *s;
+    
+    String(const char *str)
+    {   
+        cout << "Parameterized Constructor Call" << endl;
+        s = new char[strlen(s)+1];
+        strcpy(s,str);
+    }
+    
+    ~String()
+    {
+        cout << "Destructor Called " << endl;
+        if(s) delete [] s;
+        
+        s = nullptr;
+    }
+    
+    void set(const char *str2)
+    {
+        strcpy(s,str2);
+    }
+    
+    void print()
+    {
+        cout << s << endl;
+    }
+    
+    String(String &rhs)
+    {
+         s = new char[strlen(rhs.s)+1];
+        strcpy(s,rhs.s);
+    }
+    
+    String & operator = (const String &rhs)
+    {
+        if(this!=&rhs)
+        strcpy(s,rhs.s);
+        
+        return *this;
+    }
+};
+
+int main()
+{
+    String s1("Rizwan");
+    
+    String s2("Ahmed");
+    
+    s2 = s1;
+    
+    s1.print();
+    s2.print();
+    
+    s2.set("Ahmed");
+    
+    
+    s2.print();
+    s1.print();
+    
+    return 0;
+}
+
+Shallow vs Deep Copy 
+=====================
+Ex :1
+-------------------------------------------------------------------------------------------------------------------------
+#include <iostream>
+#include<string.h>
+using namespace std;
+
+class A
+{
+    private:
+    
+    char* p;
+
+    public:
+    
+    A()
+    {
+        cout<<" Default constructor"<<endl;
+    }
+
+    A(char*q)
+    {
+
+        cout<<"Parameterised constructor"<<endl;
+        p=new char[strlen(q)+1];
+        strcpy(p,q);
+    }
+    
+    ~A()
+    {  
+        cout<<"Destructor"<<endl;
+        if(p)
+        {
+            delete p;
+            p=NULL;
+        }
+    }
+    
+    void get_data()
+    {
+
+        cout<<p<<endl;
+
+    }
+    
+    void change(char ch)
+    {
+    
+         p[3]=ch;
+    
+    }
+
+    A(const A& rhs )
+    {
+        cout << "Copy Constructor call " << endl;
+        p = new char[strlen(rhs.p)+1];
+        strcpy(p, rhs.p);
+    }
+};
+
+int main() 
+{
+    A a((char*)"Orange Yellow");
+    
+    A a2(a);
+    
+    a.get_data();// orange yellow
+    a2.get_data();// orange yellow
+    a2.change('P');//
+    a.get_data();
+    a2.get_data();
+    return 0;
+}
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Ex :2 
+
+Shallow vs Deep Copy 
+====================
+
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+class Restaurant
+{
+    private:
+    
+    string name;
+    
+    mutable string placeholder;
+    
+    mutable int bill;
+    int tableno;
+    
+    char *occasion;
+    
+    int size;
+    public:
+    
+    Restaurant(string name,string menu,int price,int table_number,char* event)
+    {
+        this->name = name;
+        placeholder = menu;
+        bill = price;
+        tableno = table_number;
+        size = strlen(event);
+        occasion = new char[size+1];
+        strcpy(occasion,event);
+    }
+    
+    Restaurant(const Restaurant &obj)
+    {
+        size = obj.size;
+        occasion = new char[size+1];
+        strcpy(occasion,obj.occasion);
+    }
+    
+    void changebill(int s) const{ bill = s;}
+    
+    void changeplaceholder(string str) const { placeholder = str;}
+    
+     void setEvent(string person_name,string menu,int price,int table_number,char* event)
+    {
+        name = person_name;
+        placeholder = menu;
+        bill = price;
+        tableno = table_number;
+        // size = strlen(event);
+        // occasion = new char[size+1];
+        strcpy(occasion,event);
+    }
+    
+    void display() const
+    {
+        cout << "Customer name is: " << name << endl;
+        cout << "Food ordered by customer is: "
+             << placeholder << endl;
+        cout << "table no is: " << tableno << endl;
+        cout << "Occasion is  " << occasion << endl;
+        cout << "Total payable amount: " << bill << endl;
+    }
+    
+};
+
+int main()
+{
+    Restaurant Paradise("Rizwan","Biryani",25,13,"Wedding");
+    
+    Restaurant TajMahal=Paradise;
+    
+    Paradise.display();
+    
+    // Paradise.changeplaceholder("Mutton Mandi");
+    
+    // Paradise.changebill(40);
+    
+    TajMahal.setEvent("Ahmed","Tahari",10,1,"Birthday");
+    TajMahal.display();
+    Paradise.display();
+    return 0;
+}
+
+#include "stdafx.h"
+#include "iostream"
+#include <vector>
+#include<cstring>
+
+using namespace std;
+
+class code{
+private:
+	char *str;
+	int id;
+public:
+	code(){}
+	void init(int x,char *s){
+		id = x;
+		str = new char [25];
+		strcpy(str,s);
+	}
+	void display(){
+		cout<<"id : " << id << endl;
+		cout<<"str : " << str << endl;
+	}
+	void change(){
+		id =  3;
+		str[3] = 'K';
+	}
+
+	code(code &ref){
+		id = ref.id;
+		str = new char[25];
+		strcpy(str,ref.str);
+	}
+};
+int _tmain(int argc, _TCHAR* argv[])
+{
+	code obj;
+	obj.init(1,"abcdef");
+	obj.display();
+
+	code obj2 = obj;
+	obj2.display();
+	obj2.change();
+	obj2.display();
+	obj.display();
+
+	int i;
+	cout<<"enter integer";
+	cin>>i;
+	return 0;
+}
+
+Ex :3 
+======
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+class String 
+{
+    public:
+    
+    char *s;
+    
+    String(const char *str)
+    {   
+        cout << "Parameterized Constructor Call" << endl;
+        s = new char[strlen(s)+1];
+        strcpy(s,str);
+    }
+    
+    ~String()
+    {
+        cout << "Destructor Called " << endl;
+        if(s) delete [] s;
+        
+        s = nullptr;
+    }
+    
+    void set(const char *str2)
+    {
+        strcpy(s,str2);
+    }
+    
+    void print()
+    {
+        cout << s << endl;
+    }
+    
+    String(String &rhs)
+    {
+         s = new char[strlen(rhs.s)+1];
+        strcpy(s,rhs.s);
+    }
+};
+
+int main()
+{
+    String s1("Rizwan"),s2(s1);
+    
+    s1.print();
+    s2.print();
+    
+    s2.set("Ahmed");
+    
+    
+    s2.print();
+    s1.print();
+    
+    return 0;
+}
+
+Abstract Design Pattern:
+-----------------------------
+
+
+class GUIFactory 
+{
+public:
+	virtual Button* createButton () = 0;
+	virtual ScrollBar* createScrollBar () = 0;
+};
+Subclasses of GUIFactory such as MacFactory or WinFactory implement these operations to return widgets such as MacButton or WinScrollBar that implement a particular look and feel
+
+#include <iostream>
+
+class Button
+{
+public:
+	virtual void paint() = 0;
+};
+ 
+class WinButton : public Button 
+{
+public:
+	void paint (){
+		std::cout << " Window Button \n";
+       }
+};
+ 
+class MacButton : public Button 
+{
+public:
+	void paint (){
+		std::cout << " Mac Button \n";
+       }
+};
+
+class ScrollBar 
+{
+public:
+	virtual void paint() = 0;
+};
+ 
+class WinScrollBar : public ScrollBar 
+{
+public:
+	void paint (){
+		std::cout << " Window ScrollBar \n";
+       }
+};
+ 
+class MacScrollBar : public ScrollBar {
+public:
+
+	void paint (){
+		std::cout << " Mac ScrollBar \n";
+       }
+};
+
+
+class GUIFactory 
+{
+public:
+	virtual Button* createButton () = 0;
+	virtual ScrollBar* createScrollBar () = 0;
+};
+ 
+class WinFactory : public GUIFactory 
+{
+public:
+	Button* createButton (){
+		return new WinButton;
+	}
+	ScrollBar* createScrollBar (){
+		return new WinScrollBar;
+	}
+};
+ 
+class MacFactory : public GUIFactory 
+{
+public:
+	Button* createButton (){
+		return new MacButton;
+	}
+	ScrollBar* createScrollBar (){
+		return new MacScrollBar;
+	}
+};
+ 
+int main()
+{
+	GUIFactory* guiFactory;
+	Button *btn;
+	ScrollBar *sb;
+
+	guiFactory = new MacFactory;
+	btn = guiFactory->createButton();
+	btn -> paint();
+	sb = guiFactory->createScrollBar();
+	sb -> paint();
+
+	guiFactory = new WinFactory;
+	btn = guiFactory->createButton();
+	btn -> paint();
+	sb = guiFactory->createScrollBar();
+	sb -> paint();
+
+	return 0;
+}
+
+Dynamic Constructor:
+---------------------
+#include<iostream>
+#include<string.h>
+using namespace std;
+
+class A{
+    private:
+ char* name;
+    public:
+    A(char*p){
+        name =  new  char[strlen(p)+1];
+        
+        strcpy(name,p);
+       // cout<<sizeof(p)<<endl;
+        cout<<sizeof(strlen(p))<<endl;
+    }
+    void getData(){
+        
+        
+        cout<<name<<endl;
+        //cout<<this->name<<endl;
+    }
+};
+int main()
+{
+    A a("vect"),a1("govind sajgane from maharastra india");
+  //  a.getData();
+    a1.getData();
+
+   return 0;
+}
+
+
+Dynamic Constructor:
+====================
+
+- Constructor can also be used to allocate memory while creating objects
+- This will enable the system to allocate the right amount of memory for each object when the objects are not of the same size
+- Allocation of memory to the objects at the time of there construction is known as dynamic construction of thee object.
+- Memory is created with the help of new operator
+
+Destructor :
+============
+
+#include<iostream>
+#include<string.h>
+using namespace std;
+
+class A
+{
+    private:
+ char* name;
+    public:
+    A(char*p){
+        name=NULL;
+        name =  new  char[strlen(p)+1];
+        
+        strcpy(name,p);
+       // cout<<sizeof(p)<<endl;
+        cout<<sizeof(strlen(p))<<endl;
+    }
+    void getData(){
+        
+        
+        cout<<name<<endl;
+        cout<<sizeof(int)<<endl;
+        //cout<<this->name<<endl;
+    }
+    
+    ~A()
+    {
+        cout<<"Destructor"<<endl;
+        
+        if(name)
+        delete (name);
+    }
+};
+int main()
+{
+    A a("vect"),a1("govind sajgane from maharastra india");
+  //  a.getData();
+    a1.getData();
+
+   return 0;
+}
+
+#include<iostream>
+#include<string.h>
+using namespace std;
+
+class A
+{
+    private:
+ char* name;
+    public:
+    A(){
+       cout<<"constructor"<<endl;
+    }
+    void getData(){
+        
+        cout<<sizeof(int)<<endl;
+    }
+    
+    ~A()
+    {
+        cout<<"Destructor"<<endl;
+
+    }
+};
+int main()
+{
+    A a;
+    int x=100;
+  cout<<"Main function"<<endl;
+  {
+      cout<<"In a Local block"<<endl;
+      
+     static  A a2;
+  }
+ 
+  cout<<"Main function33333"<<x<<endl;
+
+   return 0;
+}
+
+Destructor :
+===========
+
+- It is used to destroy the object that have been created by constructor 
+- Like Constructor,Destructor is a member fuction of a class whose name is same as the class name but it is preceeded by ~ (tilde)
+- Destructor does not take any arguments or return any value 
+- It will be invoked implicitly by the complier upon from the program or block or function as case may be to clen up the storage.
+- Destructor overloading is not possible 
+- It is good pratise to use Destructor in a program since it free memory for future use 
+
+
+#include<iostream>
+using namespace std;
+
+class Sample
+
+private:
+
+static int x;
+
+public:
+
+static void show()
+{
+cout<<"the value of x is "<<this->x<<endl;
+}
+
+void get()
+
+{
+cout<<"the value of x is "<<this->x<<endl;
+}
+
+
+};
+int Sample::x=90;
+int main()
+
+{
+Sample::show();
+
+Sample a1;
+return 0;
+}
+
+1) Hardware
+2) HMI
+3) Middleware
+
+   ----------------------|
+
+/******************************************************************************
+
+Welcome to GDB Online.
+GDB online is an online compiler and debugger tool for C, C++, Python, Java, PHP, Ruby, Perl,
+C#, VB, Swift, Pascal, Fortran, Haskell, Objective-C, Assembly, HTML, CSS, JS, SQLite, Prolog.
+Code, Compile, Run and Debug online from anywhere in world.
+
+*******************************************************************************/
+#include <iostream>
+using namespace std;
+
+class Marraige
+{
+private:
+
+int engagement;
+
+static private Marraige instance =new Marraige();
+//static Marraige *instance;//Just declaration here no memory assigned for instance.to store the object of marriage we need memory.
+public:
+  static Marraige* function(){
+   //  Marraige();
+     if(instance==NULL){
+    instance= new Marraige;//
+    // cout<<"The value of instance"<<instance<<endl;
+    }else{
+    return  instance;
+    }
+  }
+     
+     void setData(int value){
+         
+         engagement=value;
+     }
+     void getData(){
+         cout<<engagement<<endl;
+         
+     }
+  
+//declaration and memory is created for that variable.
+};
+Marraige* Marraige::instance=NULL;//here we are creating memory for instance;
+int main()
+{
+
+Marraige::function()->setData(1000);
+Marraige::function()->getData();
+
+    return 0;
+}
+
+
+  - bubble sort
+  -insertion sort
+  - merge sort
+  - quick sort
+  - heap sort
+  
+  This pointer:
+  -----------
+  
+  This pointer is a unique pointer automatically passes to a member function when it is called.
+  
+  This pointer stores the address of the object when non static function is been called.
+  
+  The static function does not have (this->) pointer.
+  
+  #include<iostream>
+#include<string>
+using namespace std;
+
+class person
+{
+    private:
+    
+    int age;
+    string name;
+    
+    public:
+    
+    void scan()
+    {
+        cout<<"enter the age and name of person"<<endl;
+        cin>>age;
+        cin>>name;
+     
+    }
+    void display()
+    {
+        cout<<"Details of person"<<endl;
+        cout<<name<<endl;
+        cout<<age<<endl;
+    }
+    
+    person compare(person p)
+    {
+        if(age >p.age)
+        {
+            cout<<"Age of first person is greater"<<endl;
+            
+            return p;
+            
+        } 
+        else
+        {
+            cout<<"Age of second person is greater"<<endl;
+            return *this;
+        }
+    }
+    
+};
+
+int main()
+{
+    person a,b,q; //a name =govind age 26 ,sachine age 20
+    a.scan();
+    cout<<"scan for 2nd person"<<endl;
+    b.scan();
+    q=a.compare(b);
+    q.display();
+    return 0;
+}
+
+
+Smart pointers 
+---------------
+
+Pointer behaves like an object 
+
+class sample
+{
+    private:
+    
+    int x;
+    int y;
+    
+    public:
+    
+sample(int a, int b)
+    {
+        cout<<"Sample constructor"<<endl;
+        x = a;
+        y = b;
+    }
+    
+    void display()
+    {
+         cout<<"x"<<x<<endl;
+         cout<<"y"<<y<<endl;
+       
+    }
+    
+
+};
+
+class s
+{
+    
+    private:
+    
+    sample *p;
+public:
+ s(sample *q):p(q) //p=q
+ {
+    cout<<"Parameterized"<<endl;    
+    cout<<p<<endl;
+    cout<<q<<endl;
+ }
+ 
+ ~s()
+ {
+ if(p)
+ 
+ delete p;
+ }
+ 
+ sample * operator->(){
+     
+     return p;
+ }  
+   
+ 
+ Destructor has to be written here 
+ 
+};
+
+int main()
+{
+   s s1(new sample(10,20));
+   s1->display();
+  
+    return 0;
+}
+
+#############################################################################################################
+
+  // A generic smart pointer class 
+template <class T> 
+class SmartPtr 
+{ 
+T *ptr; // Actual pointer 
+public: 
+// Constructor 
+explicit SmartPtr(T *p = NULL) { ptr = p; } 
+
+// Destructor 
+~SmartPtr() { delete(ptr); } 
+
+// Overloading dereferncing operator 
+T & operator () { return ptr; } 
+
+// Overloding arrow operator so that members of T can be accessed 
+// like a pointer (useful if T represents a class or struct or 
+
+// union type) 
+T * operator -> () { return ptr; } 
+};
+
+####################################################################################################################
+
+Inheritance
+============
+
+-Inheritance is a mechanism by which one class can inherit the properties of another 
+- It allows the heirarchy of classes to be build moving from the most general to most specific 
+- Use of Inheritance to increase the Reusability of the base class
+- Every member of a base class is inherited by derived class with different access permission ( private,public,protected)
+- Derived class can acess all non-private(public,protected) members of the base class
+-Base class members which are required to held secure or not accessabile are to be held private 
+
+                               
+					   Access             Public       Protected       Private
+
+					 Same class            YES           YES             YES
+
+                     Derived Class         YES           YES              NO
+
+                     Outside Class         YES            NO              NO
+					 
+					 Type 1 Inherit as Private 
+					 =========================
+					 
+					  Base class        	Derived class
+					  
+					  Private members        NOT accessabile
+					  
+					  Protected Members      Private
+					  
+					  Public Members         Accessabile
+					  
+					  
+					  Type 2 Inherit as Protected 
+					 =============================
+					 
+					  Base class        	Derived class
+					  
+					  Private members        NOT accessabile
+					  
+					  Protected Members      Protected
+					  
+					  Public Members         Protected
+               					 
+               		Type 3 Inherit as Public 
+					 =========================
+					 
+					  Base class        	Derived class
+					  
+					  Private members        NOT accessabile
+					  
+					  Protected Members      Protected
+					  
+					  Public Members         Accessabile(public)
+               					 			 
+				  
+				  Class 1 Class 2 and Class 3
+				  
+				  Class 1
+				  
+				  private
+				  x,
+				  
+				  protected:
+				  
+				  y,z;
+				  
+				  class 2:protected 1
+				  
+				  y,z //become protected in class 2
+				  
+				  class 3:protected 1
+				  
+				  
+				  
+				  
+				  
+
+###################################################################################################################################
+
+
+class A{
+private: int a;
+protected : int b;
+public: int c;
+    
+    void getdata(){
+        
+        cout<<b<<endl;
+
+        cout<<c<<endl;
+    }
+};
+
+class B:protected A{
+    
+    private:
+    int x;
+    protected :int y;
+    public: int z;
+    void setdata(){
+        
+        b=100;
+        a=900;
+        c=9;
+        
+    }
+    void getdata(){
+        
+        cout<<b<<endl;
+      cout<<a<<endl;
+        cout<<c<<endl;
+    }
+    
+};
+int main(){
+A a1;
+B b1;
+
+
+b1.setdata();
+b1.getdata();
+    return 0;
+}
+
+
+#include<iostream>
+using namespace std;
+
+class A
+{
+private: int a;
+protected : int b;
+public: int c;
+    
+    void getdata(){
+        
+        cout<<b<<endl;
+
+        cout<<c<<endl;
+    }
+};
+
+class B:protected A{
+    
+    private:
+    int x;
+    protected :int y;
+    public: int z;
+    void setdata(){
+        
+        b=100;
+        //a=900;
+        c=9;//c is only accesable from base class
+        
+    }
+    /* getdata(){
+        
+        cout<<b<<endl;
+      //cout<<a<<endl;
+        cout<<c<<endl;
+    }*/
+    
+};
+int main(){
+A a1;
+B b1;
+
+
+b1.setdata();
+//a1.setdata();
+b1.getdata();
+    return 0;
+}
+
+=================================================================================================================================================================
+
+#include <iostream>
+
+using namespace std;
+class A{
+    private:int x;
+    public:
+    void set_x(){
+        x=10;
+    }
+    void get_x(){
+        cout<<x<<endl;
+    }
+};
+class B:public A{
+    private: int y;
+    public:
+    void set_y(){
+        
+        y=20;
+    }
+    void get_y(){
+        
+        cout<<y<<endl;
+    }
+};
+int main()
+{
+ A a1;
+ B b1;
+ a1.set_x();// setting x to 10
+ b1.set_x();
+ b1.set_y();// setting y to 20
+ a1.get_x();// x = 10
+ b1.get_x();//x = 10
+ b1.get_y();// y = 20
+    return 0;
+}
+
+
+=======================================================================================================================================================================
+
+
+
+
+#include <iostream>
+
+using namespace std;
+class A{
+    private:int x;
+    public:
+    void set_x(){
+        x=10;
+    }
+    void get_x(){
+        cout<<x<<endl;
+    }
+};
+class B:public A{
+    private: int y;
+    // b will have x and y  but we we asign a1=b1 a contains only x not y as it gets sliced off.
+    public:
+    void set_y(){
+        
+        y=20;
+    }
+    void get_y(){
+        
+        cout<<y<<endl;
+    }
+};
+int main()
+{
+ A a1;
+ B b1;
+ b1.set_x();// b1 object setting x to 10
+ b1.set_y();// b1 object setting y to 20
+ a1=b1;
+ a1.get_x();// a1 object x = garbage value
+ b1.get_x();//x = 10
+ b1.get_y();// y = 20
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+ 

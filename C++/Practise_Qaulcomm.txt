@@ -1,0 +1,50 @@
+
+
+All thee cconditions are satisfied :
+====================================
+1.No premption
+2.Hold and wait
+3.Mutual Exclusion
+4.Cirular Wait
+
+Handle a dead lock:
+====================
+1) Kill and restart
+2)Assign resources in such a way that dealock doesnot occcur
+
+Bankers Algorithm for dealock detection 
+
+Dont assign the resources in certain manner
+
+Livelock:
+==========
+
+Starvation:
+===========
+If certain threads are of higher priority they will get the resource 
+
+0000 0000 | 0000 0000 | 0000 0000| 0000 1010
+MSB                                        LSB
+
+Little Endain
+
+MSB at lower address Big Endain
+
+LSB at lower address Little Endain
+0000 1010
+1010 0000
+
+32+128  =160
+
+0110| 0100
+&
+1111 0000
+===========
+0110 0000
+
+0110| 0100
+0000 1111
+=========
+0000 0100
+
+<<

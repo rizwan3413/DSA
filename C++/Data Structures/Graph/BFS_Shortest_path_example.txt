@@ -1,0 +1,116 @@
+
+#include <iostream>
+#include<vector>
+#include<stack>
+#include<queue>
+#include<limits>
+#include<tuple>
+#include<algorithm>
+using namespace std;
+
+   //  0
+     
+   //  1   2
+    
+    
+ //3     4   5    */
+
+const int INF = numeric_limits<int>::max();
+
+pair<vector<int>, vector<int>> bfsShortestPath(vector<vector<int>> &graph, int startNode){
+    queue<int> q;
+    vector<int> distance(graph.size(), INF);
+    vector<int> parent(graph.size(), -1);
+    distance[startNode] = 0;
+    q.push(startNode);
+    
+    while(!q.empty()){
+        int node = q.front();
+        q.pop();
+        
+        for(int neighbour : graph[node]){
+            if(distance[neighbour] == INF){
+                distance[neighbour] = distance[node]+1;
+                parent[neighbour]= node;
+                q.push(neighbour);
+            }
+        }
+    }
+    return {distance, parent};
+}
+
+void BFS(vector<vector<int>>& graph, int startNode){
+    queue<int> q;
+    vector<bool> visited(graph.size(), false);
+    q.push(startNode);
+    visited[startNode]= true;
+    
+    while(!q.empty()){
+        int node = q.front();
+        q.pop();
+        
+        std::cout << node << " ";
+    
+        for(int neighbour : graph[node]){
+            if(!visited[neighbour]){
+                visited[neighbour] = true;
+                q.push(neighbour);
+            }
+        }
+    }
+}
+
+// Function to reconstruct the path from startNode to endNode
+vector<int> reconstructPath(const vector<int>& parent, int startNode, int endNode) {
+    vector<int> path;
+    for (int at = endNode; at != -1; at = parent[at]) {
+        path.push_back(at);
+    }
+    reverse(path.begin(), path.end()); // Reverse to get path from start to end
+    return path;
+}
+
+int main()
+{
+    vector<vector<int>> graph = {
+        {1,2},
+        {0,3,4},
+        {0,5},
+        {1},
+        {1},
+        {2}
+    };
+    
+    BFS(graph, 0);
+    //DFS(graph, 0);
+    cout<< endl;
+    
+    
+    vector<int> shortestDistances;
+    vector<int> parent;
+    int startNode = 0;
+    tie(shortestDistances, parent) = bfsShortestPath(graph, 0);
+    
+    
+     // Print shortest distances from the start node
+    for (int i = 0; i < graph.size(); ++i) {
+        if (shortestDistances[i] == INF) {
+            cout << "Node " << i << " is not reachable from the start node." << endl;
+        } else {
+            cout << "Shortest distance from node " << startNode << " to node " << i << ": " << shortestDistances[i] << endl;
+        }
+    }
+
+    // Example to reconstruct path from startNode to a specific endNode
+    int endNode = 3; // Change this to any node to find its path
+    vector<int> path = reconstructPath(parent, 0, endNode);
+
+    cout << "Path from node " << startNode << " to node " << endNode << ": ";
+    for (int node : path) {
+        cout << node << " ";
+    }
+    cout << endl;    
+    
+    
+    return 0;
+}

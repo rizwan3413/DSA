@@ -1,0 +1,75 @@
+
+#include <iostream>
+#include<vector>
+#include<stack>
+#include<queue>
+using namespace std;
+
+   //  0
+     
+   //  1   2
+    
+    
+ //3     4   5    */
+
+void DFS(vector<vector<int>>& graph, int startNode){
+    stack<int> s;
+    vector<bool> visited(graph.size(), false);
+    s.push(startNode);
+    
+    while(!s.empty()){
+        int node = s.top();
+        s.pop();
+        
+        if(!visited[node]){
+            visited[node]= true;
+            std::cout << node << " ";
+        
+            for(int neighbour : graph[node]){
+                if(!visited[neighbour]){
+                    s.push(neighbour);
+                }
+            }
+        }
+    }
+}
+
+void BFS(vector<vector<int>>& graph, int startNode){
+    queue<int> q;
+    vector<bool> visited(graph.size(), false);
+    q.push(startNode);
+    visited[startNode]= true;
+    
+    while(!q.empty()){
+        int node = q.front();
+        q.pop();
+        
+        std::cout << node << " ";
+    
+        for(int neighbour : graph[node]){
+            if(!visited[neighbour]){
+                visited[neighbour] = true;
+                q.push(neighbour);
+            }
+        }
+    }
+}
+int main()
+{
+    vector<vector<int>> graph = {
+        {1,2},
+        {0,3,4},
+        {0,5},
+        {1},
+        {1},
+        {2}
+    };
+    
+    DFS(graph, 0);
+    cout<< endl;
+    BFS(graph, 0);
+    return 0;
+}
+
+
+

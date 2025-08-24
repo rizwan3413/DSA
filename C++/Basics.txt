@@ -1,0 +1,3596 @@
+
+C -98/99
+
+C Basics :
+==========
+                  
+int - short      signed        
+      long       unsigned 
+  
+  bool flag = true/false
+  
+	  bool                 1 byte                                             
+	  short int            2 bytes         -(2^16)/2 to ((2^16)/2)-1     %hd  32768 to
+      unsigned short int   2 bytes          0 to 2^16/2-1                %hu
+	  
+	  int 				   4 bytes         -2^(32-1) to 2^(32-1)-1        %d
+
+      unsigned int         4 bytes  	   0 to to 2^32-1                 %u
+	  
+	  long int             4 bytes         -2^32/2 to 2^32/2-1            %ld
+	  
+	  usigned long int     4 bytes          0 to 2^32-1                   %lu
+ 
+      long long            8 bytes          -2^64/2 to 2^64/2-1           %lld
+
+   usigned long long int   8 bytes          0 to 2^64-1                   %llu
+	  
+	  
+	  char    - signed
+	            unsigned 
+				
+	 signed char           1 bytes          -2^8/2 to 2^8-1              %c
+	 
+	 unisgned char         1 bytes           0 to 2^8-1                  %c
+
+
+     float                 4 bytes                                       %f
+
+     double                8 bytes                                       %lf	
+
+     long double           12 bytes 									 %LF
+	 
+	 
+	 int  short(unsigned/signed)/long(unsigned/signed)
+
+	 
+	 
+	 Memory Layout in C:
+	 ===================
+	 
+ 
+ Environment - Command Line Arguments and the Environment Variables are stored in in the environment section;
+ 
+ So the memory layout in C is basically divided in to five components:-
+ 
+  
+High Addresses ---> .----------------------.
+                    |      Environment     |
+                    |----------------------|
+                    |                      |   Functions and variable are declared
+                    |         STACK        |   on the stack.
+base pointer ->     | - - - - - - - - - - -|
+                    |           |          |
+                    |           v          |
+                    :                      :
+                    .                      .   The stack grows down into unused space
+                    .         Empty        .   while the heap grows up. 
+                    .                      .
+                    .                      .   (other memory maps do occur here, such 
+                    .                      .    as dynamic libraries, and different memory
+                    :                      :    allocate)
+                    |           ^          |
+                    |           |          |
+ brk point ->       | - - - - - - - - - - -|   Dynamic memory is declared on the heap
+                    |          HEAP        |
+                    |                      |
+                    |----------------------|
+                    |          BSS         |   Uninitialized data (BSS)
+                    |----------------------|   
+                    |          Data        |   Initialized data (DS)
+                    |----------------------|
+                    |          Text        |   Binary code
+Low Addresses ----> '----------------------'  
+
+
+1)Stack - 
+
+- It contains the function variables and the Book keeping related data
+- It comes in to existence based on the System Function call ---> As soon as there is a function call there is something called as Stack Frame which will create a Stack . 
+  Every Function has a Stack Frame : The Stack Frame contains Functions local variable arguments and return value
+- As the size of the Stack progresses it continues to grow down towards Heap area from top to bottom
+- Once the Function call is complete and the respective function returns the corresponding value the Stack memory is erased.
+- Stack follows LIFO method for (Pushing-insertion) and (Popping-removing) the variables from the Stack
+
+2)Heap -
+
+- Area is used when allocation of memory at run-time is needed.
+- This area is managed by memory management functions like malloc,calloc,free etc.
+- The Heap area is shared by all shared libraries and dynamically loaded modules in a process.
+- It grows and shrinks in the opposite direction of the stack.
+
+3)BSS(Block Stored by Sybmol)
+
+- All unitialized Global and Static variables are stored in BSS 
+- All variables in this segment are initialized to zero 
+- The Program Loader allocates the memory to the BSS section when it loads the program
+
+4)Data Segment -
+
+- It contains explicitly initialized global and Static variables 
+- The size of the segment is determined by size of the values in program source code
+- It has Read-Write permission so that the value of the variable of the segment can be changed at run-time.
+
+
+5)Text
+ 
+- Text segment contains binary of the compiled program.
+- The text segment is a read-only segment that prevents a program from being accidentally modified.
+- It is sharable so that only a single copy needs to be in memory for frequently executed programs such as text editors etc.
+
+               Windows/Linux/Mac/Rasberry
+			   
+	 .c/cpp - .exe
+	 .c/cpp -  
+	 .c/cpp - 
+	 
+	 Two Types of Programming Languages
+      =================================
+     Compiler - A program which convertes one language to machine code in entire scan /all together  
+                
+				Ex : C,C++,Java,C#
+				
+     Interpretor  - A program which convertes one language to machine code in line by line fashion 
+               Ex: Ruby,Python,Perl etc
+			   
+     Interpretor 	  
+	 Text - Machine Code 
+      
+
+	 
+Storage Class in C:
+===================
+            Storage          Initial Value        Scope   	                 Life
+			
+ Auto       Stack            Garbage Value      Witin Block                  End of Block 
+ 
+ Extern     Data Segement    Zero(0)            Global Within Multiple       Throughout the program
+ 
+ Static     Data Segement    Zero(0)            Witin Block                  Throughout the program
+ 
+ Register   CPU register     Garbage Value      Witin Block                  End of the Block 
+
+ Volatile   
+ 	 
+	 
+	  program
+      Compiler  --------- Linker --------- Loader 	
+	   
+	   Compiler - Used to convert high level programming language in to machine understandable language 
+	   
+	   Both Compiler and Interpretor do the same job but in a different way 
+	   
+	   Compiler scans the entire peace of code and converts it to machine understandle language where as interpretor converts the code line by line
+	   
+	   The job of the linker is to link the o/p of the compiler with library file
+	   
+	   Loader - loads the program in RAM for execution
+	 
+	 Module - Submodules
+
+  1 Submodule 
+
+  static int i ; the life time is with in program/private
+
+  static int fun();  private
+           
+ Ex of Extern and Static:
+ ========================
+ Static example :
+ 
+ #include<iostream>
+using namespace std;
+
+int fun()
+{
+    static int i;
+    i++;
+   return i;
+}
+
+int main()
+{
+        fun();
+        fun();
+        cout<< "The value of i is :" << fun() << endl;
+        return 0;
+}
+
+
+Extern:
+======= 
+main.c 
+
+ #include<iostream>
+using namespace std;
+
+int fun()
+{
+    static int i;
+    i++;
+   return i;
+}
+
+
+main1.c 
+
+ #include<iostream>
+using namespace std;
+
+extern int i;
+extern int fun();
+
+int main()
+{
+       cout<< "The value of i is :" << fun() << endl;
+        return 0;
+}
+
+
+Operators in C:
+===============
+
+Unary Operator    -     ++,--     
+
+Binary Operator   -     +,-,*,/,%        Arithematic
+
+                       <,<=,>=,==,!=     Relational 
+					   
+					   &&, ||, !         Logical Operators 
+					   
+					   
+					   &,|,<<,>>,~,^     Bitwise Operators
+					   
+					   =,+=,-=,*=,/=,%=  Assignment operator 
+
+Ternary Operator      ?:                Conditional Operator 
+
+
+Operators:
+==========
+Arthimatic Operators:
+---------------------
+-> Div - /
+   Product - *
+   Modulus - % 
+   Addition - + 
+   Substraction -- -
+
+Example:
+#include <stdio.h>
+
+int main(void) 
+{
+ int _num1=10;
+ int _num2=20;
+ printf("(_num1+_num2):%d\n", (_num1+_num2));
+ printf("(_num1-_num2):%d\n", (_num1-_num2));
+ printf("(_num1*_num2):%d\n", (_num1*_num2));
+ printf("(_num1%_num2):%d\n", (_num1%_num2));
+ printf("(_num1/_num2):%f\n", ((float)_num1/_num2));
+ return 0;
+}
+
+Notes:
+------
+1. % operator can't work directly on the floating point numbers, we need to use the fmod function to get reminder of
+   floating pointer
+
+#include <stdio.h>
+
+int main(void) 
+{
+ float _num1=10.45f;
+ float _num2=20.23f;
+ printf("(_num1+_num2):%f\n", (_num1+_num2));
+ printf("(_num1-_num2):%f\n", (_num1-_num2));
+ printf("(_num1*_num2):%f\n", (_num1*_num2));
+ printf("(_num1%_num2):%f\n", fmod(_num1, _num2));
+ printf("(_num1/_num2):%f\n", ((float)_num1/_num2));
+ return 0;
+}
+
+2. If the numerator is less than denominator in case of % then output is numerator
+   10%20 -- 10
+
+3. While using arthimatic operators typecasting is very important to avoid loss of data
+
+
+#include <stdio.h>
+int main(void) 
+{
+ long Patient_position = 12345;
+ float Landmark = Patient_position/10.0; //Patient_position/10
+ 
+ printf("%f", Landmark);
+ return 0;
+}
+
+or
+
+#include <stdio.h>
+
+int main(void) 
+{
+ long Patient_position = 12345;
+ float Landmark = Patient_position/(float)10; //Patient_position/10
+ 
+ printf("%f", Landmark);
+ return 0;
+}
+
+or 
+
+#include <stdio.h>
+
+int main(void) 
+{
+ long Patient_position = 12345;
+ float Landmark = (float)Patient_position/10; //Patient_position/10
+ 
+ printf("%f", Landmark);
+ return 0;
+}
+
+4. The sign of arthimatic operators are same as normal mathamatics
+    + * + ---> +
+    - * - ---> +
+    + * - ---> -
+    - * + ---> -
+
+    + / + --> +
+    + / - --> -
+    - / + --> -
+    - / - --> +
+
+    Always % follows sign of numerator
+    + % + --> +
+    - % - --> -
+    - % + --> -
+    + % - --> +
+
+
+
+5. The procedence of the arthimatic operators is as follows
+   First procedence -- [/ * %] [All are same procedence but from left to right]
+   Second Procedene -- [+ -] [Both are same procedence but from left to right]
+
+   2+4/5-4*2+5%5
+   2+0-4*2+5%5 -- > 4/5   
+   2+0-8+5%5 --- > 4*2
+   2+0-8+0 ---> 5%5
+   2-8+0 ----> 2-8
+   -6+0 -->-6+0
+    -6
+------------------------------------------------------------------------------
+
+Implicit Type Conversion in C:
+===============================
+
+											    bool
+											   -------	
+											   	char
+											-----------
+                                              short int 
+                                          ----------------
+                                                int 
+                                        -------------------
+                                           unisgned int 	
+                                       -----------------------
+                                               long
+                                     ---------------------------
+                                             unsigned long 
+                                     ----------------------------
+                                            long long 
+                                   ---------------------------------
+											float 
+								 ------------------------------------
+								            double 
+						-------------------------------------------------
+						                    long double 		            
+  			 
+					   
+					   
+					   
+					   
+	
+ #include<iostream>
+ using namespace std;
+ 
+class Complex
+{
+    private:
+    
+    float real;
+    float imag;
+    
+    public:
+    
+    //Default Constructor
+     Complex(float r ,float i ):real(r),imag(i){}
+     
+      Complex(float r):real(r),imag(r){}
+     
+     //Defaut Constructor
+     //One value - explicit key word can be used 
+     //Two Values
+    
+    bool operator == (Complex rhs)
+    {
+        return (real == rhs.real && imag == rhs.imag)? true : false;
+    }
+};
+
+int main()
+
+{
+    Complex a1(3.0,3.14);
+    
+    Complex a2 = 3.0; // Conversion Constructor // data type is converted in to an object 
+    
+    if(a2 == 3.0)
+    cout << "same" << endl;
+    
+    else
+    cout << "different" << endl;
+
+    return 0;
+}
+
+
+// Dont use this pointer inside a constructor 
+
+// static member cannot be initialised with this 
+
+#include<iostream>
+using namespace std;
+
+class Test1
+{
+    
+    private:
+    
+    int x;
+    int y;
+    int *ptr;
+    public:
+    
+    Test1():x(0),y(0),ptr(nullptr) 
+    {
+        cout << " Base class Default constructor called" << endl;
+       //this->get();   
+    }
+    
+    Test1(int z,int a)// Dynamic Constructor
+     {
+         
+         cout << " Base class Parameterized constructor called" << endl;
+         
+         ptr =  new int[10];
+         x = z;
+         y = a;
+         
+     }
+     
+    virtual ~Test1(){ cout << " Destructor of Base class called" << endl;
+                delete [] ptr;}
+     
+    virtual void set(int a,int b)
+    {
+        x = a;
+        y = b;
+    }
+    
+    virtual void get()
+    {
+        cout << " Base Class Get Function called" << endl;
+        cout << x << endl; 
+        cout << y << endl;
+    }
+    
+};
+
+class Test : public Test1 
+{
+    public:
+    
+    static int x;
+    
+    int y; 
+    int *ptr1;
+    //name of member variable of class and constructor are same 
+    
+     Test():y(0),ptr1(nullptr)
+     {
+         cout << " Derived class Default constructor called" << endl;}
+     
+     Test(int z,int a) //: Test1(z+10,a+10) //
+     {
+         cout << "Derived class Parameterized constructor called" << endl;
+         
+         ptr1 =  new int[10];
+         x = z;
+         y = a;
+         
+     //    this->get();
+     }
+    
+     ~Test(){ cout << " Destructor of Derived class called" << endl;
+                     delete [] ptr1; }     
+     void set(int y)
+     {
+         
+         this->y = y;
+     }
+     
+    void get()
+    {
+        cout << " Derived Class get Function called" << endl;
+        
+        cout << x << endl;
+        cout << y << endl;
+    }
+    
+    static void set1(int x)
+    {
+        Test::x = x;
+    }
+};
+
+int Test :: x = 10;
+
+int main()
+{
+    Test1 *ptr = new Test(5,4);// Base class object 
+    
+    //Test *ptr1 = new Test(4,10);// Derived class object 
+    
+    delete ptr;
+    //delete ptr1;
+    return 0;
+
+}
+
+
+#include<iostream>
+#include<typeinfo>
+using namespace std;
+
+class Derived;
+
+class Base 
+{
+    public:
+    
+    int a;
+    
+    Base(){}
+    
+     Base(int x):a(x)
+    {
+        
+        cout << a << endl;
+    }
+    
+    static Base* fun(int x);
+
+    virtual void get(){
+        cout << a << endl;
+    }    
+};
+
+class Derived : public Base 
+{
+    public :
+    
+    int b;
+    
+    Derived(){}
+    
+    Derived(int y):b(y){}
+    
+    void get(){
+        cout << b << endl;
+    }    
+    
+};
+
+ Base* Base::fun(int x)
+    {
+        Base* ptr = NULL;
+        
+        if(x == 1)
+        {
+            ptr = new Base();
+        }
+        
+        if(x == 2)
+        {
+            ptr = new Derived();
+        }
+        
+        return ptr;
+     }
+    
+int main()
+{
+    Base *ptr = Base::fun(2);
+    
+    cout << typeid(*ptr).name() << endl;
+    
+    return 0;
+}
+
+
+
+//future promise
+// async
+//packaged task 
+
+//Synchronous -All normal functions are synchronous functions
+
+//Async - You dont wait for the output from the function //future object
+#include<iostream>
+#include<thread>
+#include<future>
+using namespace std;
+
+void fun(std::promise<int> &rhs)//R value
+{
+    int sum =0;
+    for(int i=0;i<10;i++)
+    {
+        cout << "Function" << endl;
+        sum+=i;
+        this_thread::sleep_for(chrono::seconds(1));
+    }
+    
+    rhs.set_value(sum);
+}
+
+int main()
+{
+    std::promise<int> var;//Every promise object stores one future object
+    
+    std::future<int> t1 = var.get_future();
+    
+    std::thread t2(fun,std::ref(var));
+    
+    cout << "Main Thread " << endl;
+    
+    cout << "The result is " << t1.get()<< endl;//Synchonous call 
+    
+    return 0;
+}
+
+
+//future promise
+// async
+//packaged task 
+
+Async 
+======
+
+//Synchronous -All normal functions are synchronous functions
+
+//Async - You dont wait for the output from the function //future object
+#include<iostream>
+#include<thread>
+#include<future>
+using namespace std;
+
+int fun()
+{
+    int sum =0;
+    for(int i=0;i<10;i++)
+    {
+        cout << "Function" << endl;
+        sum+=i;
+        this_thread::sleep_for(chrono::seconds(1));
+    }
+    return sum;
+}
+
+int main()
+{
+    std::future<int> t1 = std::async(fun);
+    
+    cout << "Main Thread " << endl;
+    
+    cout << "The result is " << t1.get()<< endl;//Synchonous call 
+    
+    return 0;
+}
+
+// std::ref vs && R value 
+
+//std::move is used to pass R value 
+
+Example using std::move()
+==========================
+#include<iostream>
+#include<thread>
+#include<future>
+#include<cmath>
+using namespace std;  //int var = 10; 
+
+void fun(int&& var, bool &flag)
+{
+     flag = true;
+    
+    for(int i=2;i<sqrt(var);i++)
+    {
+        cout << "Function" << endl;
+        
+        if(var%i ==0)
+         flag =false;
+        this_thread::sleep_for(chrono::seconds(1));
+    }
+    
+}
+
+int main()
+{
+    bool flag;
+    
+    int var1 = 11;
+    
+    cout << "Main Thread " << endl;
+    
+//  std::promise<int> var;
+    
+  //std::future<int> t1 = var.get_future();
+    
+    std::thread t2(fun,std::move(var1),std::ref(flag));
+    
+    
+    t2.join();
+    
+    cout << "The given number is" << ((flag == true) ? "prime":"not prime") ;
+    
+//  cout << "The result is " << t1.get()<< endl;//Synchonous call 
+    
+    return 0;
+}
+
+//Packaged Task - We can store the function,lambda or function object 
+//Function Object 
+  
+#include<iostream>
+#include<thread>
+#include<future>
+#include<cmath>
+using namespace std;  //int var = 10; 
+
+bool fun(int &&var)
+{
+     bool flag = true;
+    
+    for(int i=2;i<sqrt(var);i++)
+    {
+        cout << "Function" << endl;
+        
+        if(var%i ==0)
+         flag =false;
+        this_thread::sleep_for(chrono::seconds(1));
+    }
+    return flag;   
+}
+
+int main()
+{
+    int a = 11;
+    
+    std::packaged_task<bool(int &&)> var(fun);
+    
+    std::future<bool> var1 = var.get_future();
+    
+    var(std::move(a));
+    
+    cout << "MainThread" << endl;
+    
+    cout << "The Given number is " << ((var1.get())? "prime" :"Not Prime");
+    
+    return 0;
+}
+
+
+
+Templates:
+==========
+
+Templated Function Using 1 Argument :
+===================================
+#include<iostream>
+using namespace std;
+
+template<typename T>
+T GetMax(T a,T b)
+{
+    return a>b?a:b;
+}
+
+int main()
+{
+    int i=5,j=10,k;
+    
+    double m=53.12454,n=93.4515,l;
+    
+    k = GetMax<int>(i,j);
+    l = GetMax<double>(m,n);
+    
+    
+    cout << "The greater number is " << k << endl;
+    
+    cout << "The greater number is " << l << endl;
+    
+    return 0;
+}				   
+
+Templated Function Using 2 Arguments 
+====================================
+#include<iostream>
+using namespace std;
+
+template<class T,class U>
+U GetMax(T a,U b)
+{
+    return a<b?a:b;
+}
+
+int main()
+{
+    int i=500,j=10;
+    
+    double k;
+    
+    double m=53.12454,n=93.4515,l;
+    
+    k = GetMax<int,double>(i,m);
+    
+    
+    cout << "The minimum number is " << k << endl;
+    
+//    cout << "The greater number is " << l << endl;
+    
+    return 0;
+}
+
+Varidic templates 
+==================
+#include<iostream>
+using namespace std;
+
+template<typename T>
+T add(T a)
+{
+    return a;
+}
+
+template<typename T,typename ...Vs>
+T add(T a,Vs...nvar)
+{
+    return a+add(nvar...);
+}
+
+void print()
+{
+    
+}
+
+template<typename T, typename ...Vs>
+void print(T var, Vs...nvar)
+{
+    cout << var << " ";
+    print(nvar...);
+}
+int main()
+{
+   cout << add(1+2+3+4+7.24+6+7) << endl;
+   
+   print(14,15.124,"Test",'c',true,false);
+   
+    return 0;
+}
+
+Class template 
+==============
+#include<iostream>
+using namespace std;
+
+template<typename T>
+class Mypair
+{
+    T a,b;
+    
+    public:
+    
+    Mypair(){}
+    
+    Mypair(T first,T second):a(first),b(second){}
+    
+    T GetMax();
+};
+
+template<typename T>
+T Mypair<T>::GetMax()
+{
+    return a>b?a:b;    
+}
+
+int main()
+{
+    Mypair<int> obj1(10,15);
+    
+    cout << obj1.GetMax() << endl;
+
+    return 0;
+}
+
+
+Class template with a Specialized Template :
+=============================================
+#include<iostream>
+using namespace std;
+
+template<typename T>
+class MyContainer
+{
+    T element;
+    
+    public:
+    
+    MyContainer(T arg)
+    {
+        element = arg;
+        cout << "The value of element is : " << element << endl;
+    }
+    
+    T increase() {return ++element;}
+};   
+
+    template <> 
+    class MyContainer<char>
+    {
+        char ch;
+        
+        public:
+        MyContainer(char b)
+        {
+            ch = b;
+            cout << "The value of character is : " << ch << endl;
+        }
+        
+      char Uppercase()
+      {
+          if ((ch>='a')&&(ch<='z'))
+        ch+='A'-'a';
+        return ch;
+      }
+};
+
+
+int main()
+{
+    MyContainer<int> obj1(10);
+    
+    MyContainer<char> obj2('j');
+    
+    cout << "The value of element after increment is  :"<<obj1.increase() << endl;
+
+    cout << "The value of character in Upper case is  :" <<obj2.Uppercase() << endl;
+    return 0;
+}
+
+
+Function Pointer :
+===================
+#include<iostream>
+using namespace std;
+
+//Vendor Code//
+
+typedef void(*fp)(int,int); // typedef shared_ptr itr shared_p
+
+void compute(fp var,int big,int small)
+{
+
+var(big,small);
+}
+
+//Consumer code is below//
+
+
+void add(int a,int b)
+{
+
+cout<<"The Value of a is  "<<a<<"\nThe Value of b is"<<b<<"\nThe result is"<<a+b;
+
+}
+
+void subtract(int a,int b)
+{
+
+cout<<"\nThe Value of a is"<<a<<"\nThe Value of b is"<<b<<"\nThe result is"<<a-b<<endl;
+
+}
+
+int main()
+{
+
+
+fp var = &add;// void(*fp)(int,int) = &add //fp behaves  as datatype while doing a type def
+
+var(15,10);
+
+var = &subtract;
+
+var(15,10);
+
+
+//compute(&add,10,15);
+//compute(&subtract,15,10);
+
+return 0;
+}
+
+
+#include<iostream>
+using namespace std;
+
+class A
+{
+
+public:
+
+static int d;
+
+static void add(int a,int b)
+{
+
+cout<<"The Value of a is  "<<a<<"\nThe Value of b is"<<b<<"\nThe result is"<<a+b;
+
+}
+
+void subtract(int a,int b)
+{
+
+cout<<"\nThe Value of a is"<<a<<"\nThe Value of b is"<<b<<"\nThe result is"<<a-b<<endl;
+
+}
+
+};
+
+int A::d;
+
+int main()
+
+{
+
+void(A::*fp)(int,int);
+
+void(*gp)(int,int);
+
+gp = &A::add;
+
+A a1,a2;
+
+(*gp)(10,15);
+
+fp =&A::subtract;
+
+(a1.*fp)(15,10);
+
+cout<<"\nAddress of object1:"<<&a1.d<<endl;
+cout<<"\nAddress of object2"<<&a2.d<<endl;
+cout<<"\nAddress of static variable:"<<&A::d<<endl;
+
+return 0;
+}
+
+
+Algorithm:
+==========
+for_each(container.begin(),container.end(),function_name);
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+
+void print(int a)
+{
+
+    cout<<"the Value of a is:"<<a<<endl;
+
+}
+
+void even(int b)
+
+{
+
+ if(b%2==0)
+ 
+ cout <<  b  <<" is Even "  <<endl;
+
+}
+
+
+int main()
+
+{
+  vector<int> vect{1,2,3,4,5,6,7,8,9,10};
+  
+ for_each(vect.begin(),vect.end(),even);
+
+
+ return 0;
+
+}
+
+Same Example with Range based for loop
+=======================================
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+
+void print(int a)
+{
+
+    cout<<"the Value of a is:"<<a<<endl;
+
+}
+
+void even(int b)
+
+{
+
+ if(b%2==0)
+ 
+ cout <<  b  <<" is Even "  <<endl;
+
+}
+
+
+int main()
+
+{
+  vector<int> vect{1,2,3,4,5,6,7,8,9,10};
+  
+  
+  for(const int &e : vect)
+  {
+      cout << e << " ";
+  }
+  
+  cout << "\n";
+  
+ for_each(vect.begin(),vect.end(),print);
+
+
+ return 0;
+
+}
+
+Count
+======
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+
+void print(int a)
+{
+
+    cout<<"the Value of a is:"<<a<<endl;
+
+}
+
+void even(int b)
+
+{
+
+ if(b%2==0)
+ 
+ cout<<"The number is Even "<< b  << endl;
+
+}
+
+
+int main()
+
+{
+  vector<int> vect{1,2,1,4,1,6,1,8,1,1};
+  
+// count is used to cont the number of elements in the container
+
+cout<< count(vect.begin(),vect.end(),1)<<endl;
+
+
+ return 0;
+
+}
+
+find( ALso provided the implementation of Iterator 
+==================================================
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+
+void print(int a)
+{
+
+    cout<<"the Value of a is:"<<a<<endl;
+
+}
+
+void even(int b)
+
+{
+
+ if(b%2==0)
+ 
+ cout<<"The number is Even "<< b  << endl;
+
+}
+
+
+int main()
+
+{
+  vector<int> vect{1,2,3,4,5,6,7,8,9,10};
+
+ vector<int>::iterator itr;
+ 
+ for(itr = vect.begin();itr!=vect.end();itr++)
+ {
+     cout << *itr << " ";
+ }
+  
+  cout << "\n";
+  
+ itr = find(vect.begin(),vect.end(),10);
+ 
+ if(itr==vect.end())
+
+ cout<<"The element is not present"<<endl;
+
+ else 
+
+ cout<<"The searched value is : " << *itr<<endl;
+
+ return 0;
+
+}
+
+replace
+=======
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+
+void print(int a)
+{
+
+    cout<<"the Value of a is:"<<a<<endl;
+
+}
+
+void even(int b)
+
+{
+
+ if(b%2==0)
+ 
+ cout<<"The number is Even "<< b  << endl;
+
+}
+
+
+int main()
+
+{
+  vector<int> vect{1,2,3,2,5,2,7,8,2,10};
+  
+  for(const int &e : vect)
+  {
+      cout << e << " ";
+  }
+  
+  cout << "\n";
+  
+  replace(vect.begin(),vect.end(),2,11);
+
+   for(const int &e : vect)
+  {
+      cout << e << " ";
+  }
+  
+  cout << "\n";
+  
+ return 0;
+
+}
+
+Using Sort function with our own comparator:
+============================================
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+struct Interval
+{
+    public:
+    
+    int start,end;
+    
+};
+
+bool compareInterval(Interval i1,Interval i2)
+{
+        return i1.start < i2.start;
+}
+
+int main()
+
+{ 
+    Interval arr[] =  { {6,8}, {1,9}, {2,4}, {4,7} }; 
+    
+    int n = sizeof(arr)/sizeof(arr[0]); 
+  
+    
+    sort(arr, arr+n,compareInterval); 
+  
+  
+ for(int i=0;i<n;i++)
+  {
+      cout << "[" << arr[i].start << ","<< arr[i].end << "]";
+  }
+  
+  
+ return 0;
+
+}
+
+Map container :
+===============
+
+#include<iostream>
+#include<map>
+#include<algorithm>
+
+using namespace std;
+
+void print(map<int,int> a)
+{
+
+    map<int,int> :: iterator itr = a.begin();
+
+
+   while(itr!=a.end())
+ {
+   cout<<"The begining key is "<<itr->first<<endl;
+
+   cout<<"Pair:(Key,Value)("<< itr->first <<","<< itr->second<<")"<<endl;
+
+   itr++;
+   
+   cout << "\n";
+
+ }
+
+}
+
+int main()
+
+{
+
+    map<int,int> a;
+    
+    a[0] = 1;
+    
+    a[1] = 13;
+    
+    a[2] = 14;
+    
+    a[3] = 15;
+
+    pair<int,int> b;
+
+    b.first = 4;
+    b.second =15;
+   
+   a.insert(b);
+   
+   print(a);
+ 
+return 0;
+
+}
+
+
+Memory Model:
+=============
+
+ char *ptr = "Rizwan";
+ ptr -> _ _ _ _ 
+ 
+ ptr and &ptr[0]  will be same
+ 
+ 
+ char **ptr  = {{"Rizwan","Ahmed","Shaik"}};
+ 
+  ptr[0] = "Rizwan";
+
+  ptr[1] = "Ahmed";
+
+  ptr[0] = "Shaik";
+  
+  
+  int ptri[3][4] =  = { {1,2,3,4},{5,6,7,8},{9,10,0,0}};
+  
+  double ptrd[3][4] =  = { {1.1212,2.215,3,4},{5,6,7,8},{9,10,0,0}};
+  
+  char ptrc[3][1]  = {{'R'},{'A'},{'S'}};
+  
+  
+  char **p = ptrc[0];
+                          
+                     'R'
+                     
+                     'A'
+                     
+                     'S'					 
+  
+
+  
+ Embedded Development :
+======================
+C
+C++
+Linux
+Shell scripting
+
+
+
+
+Multithreading : It is a technique of handling multiple threads simultaneously
+================
+- Thread is a path that is followed during program execution 
+- Majority of programs written today are single thread.
+
+Process - A program which is being executed is a Process ( Collection of Threads)
+Thread - Its a path followed during program execution or a light weight process 
+
+Concurrent vs Paralell execution :
+==================================
+
+Concurrent Execution - If a processor can switch execution resources between threads in a multithreaded process on a single processor ,then  it is termed as concurrent execution 
+
+Parallel Execution - 
+
+
+Concurrency - When two tasks start,run and complete in different time periods
+              Ex: Multitasking in single core-machine 
+
+Parallelism - When two tasks starts at same time interval 
+              Ex : Multi core processor 
+			  
+
+Tasks are executed based on Tasks Sceduling mechanisms:
+=======================================================
+1) First come first serve
+2) Round robin
+3) Priority Scheduling
+
+Prioity inversion is a problem in Priority Sceduling
+
+In general High Priority tasks are executed first 
+
+If a low priority task is using shared resource or a critical section,High priority task must wait until low priority tasks has completed of CS.
+
+If high priority task has a critical dealine it has to meet then lock out time for shared resources has to be calculated.
+
+Priority Inversion occurs when a medium priority task pre-empts a low priority task which is using a shared resource common to high priority task 
+Where H is kept to wait from a medium priority task hence inverting the priority 
+
+This can be resolved by using Priority Inheritance
+
+
+Mutex  :
+========
+Mutex is a lockable object that is designed to signal when critical Section of code exclusive access preventing other threads with the same protection from executing concurrently
+ 
+
+#include <iostream>       // std::cout
+#include <thread>         // std::thread
+#include <mutex>          // std::mutex
+
+std::mutex mtx;           // mutex for critical section
+
+void print_block (int n, char c) {
+  // critical section (exclusive access to std::cout signaled by locking mtx):
+  mtx.lock();
+  for (int i=0; i<n; ++i) { std::cout << c; }
+  std::cout << '\n';
+  mtx.unlock();
+}
+
+int main ()
+{
+  std::thread th1 (print_block,50,'*');
+  std::thread th2 (print_block,50,'$');
+
+  th1.join();
+  th2.join();
+
+  return 0;
+} 
+
+lock function mechanism:
+========================
+#include <iostream>       // std::cout
+#include <thread>         // std::thread
+#include <mutex>          // std::mutex
+
+std::mutex mtx;           // mutex for critical section
+
+void print_thread_id (int id) {
+  // critical section (exclusive access to std::cout signaled by locking mtx):
+  mtx.lock();
+  std::cout << "thread #" << id << '\n';
+  mtx.unlock();
+}
+
+int main ()
+{
+  std::thread threads[10];
+  // spawn 10 threads:
+  for (int i=0; i<10; ++i)
+    threads[i] = std::thread(print_thread_id,i+1);
+
+  for (auto& th : threads) th.join();
+
+  return 0;
+}
+
+try_lock
+========
+// mutex::try_lock example
+#include <iostream>       // std::cout
+#include <thread>         // std::thread
+#include <mutex>          // std::mutex
+
+volatile int counter (0); // non-atomic counter
+std::mutex mtx;           // locks access to counter
+
+void attempt_10_increases () {
+  for (int i=0; i<10; ++i) {
+    if (mtx.try_lock()) {   // only increase if currently not locked:
+      ++counter;
+      mtx.unlock();
+    }
+  }
+}
+
+int main ()
+{
+  std::thread threads[10];
+  // spawn 10 threads:
+  for (int i=0; i<10; ++i)
+    threads[i] = std::thread(attempt_10_increases);
+
+  for (auto& th : threads) th.join();
+  std::cout << counter << " successful increases of the counter.\n";
+
+  return 0;
+}
+
+Lock_gaurd
+==========
+
+#include <iostream>       // std::cout
+#include <thread>         // std::thread
+#include <mutex>          // std::mutex, std::lock_guard
+#include <stdexcept>      // std::logic_error
+
+std::mutex mtx;
+
+void print_even (int x) {
+  if (x%2==0) 
+  std::cout << x << " is even\n";
+  else throw (std::logic_error("not even"));
+}
+
+void print_thread_id (int id) {
+  try {
+    // using a local lock_guard to lock mtx guarantees unlocking on destruction / exception:
+    std::lock_guard<std::mutex> lck (mtx);
+    print_even(id);
+  }
+  catch (std::logic_error&) {
+    std::cout << "[exception caught]\n";
+  }
+}
+
+int main ()
+{
+  std::thread threads[10];
+  // spawn 10 threads:
+  for (int i=0; i<10; ++i)
+    threads[i] = std::thread(print_thread_id,i+1);
+
+  for (auto& th : threads) th.join();
+
+  return 0;
+}
+
+unique_lock
+============
+#include <iostream>       // std::cout
+#include <thread>         // std::thread
+#include <mutex>          // std::mutex, std::unique_lock
+
+std::mutex mtx;           // mutex for critical section
+
+void print_block (int n, char c) {
+  // critical section (exclusive access to std::cout signaled by lifetime of lck):
+  std::unique_lock<std::mutex> lck (mtx);
+  for (int i=0; i<n; ++i) { std::cout << c; }
+  std::cout << '\n';
+}
+
+int main ()
+{
+  std::thread th1 (print_block,50,'*');
+  std::thread th2 (print_block,50,'$');
+
+  th1.join();
+  th2.join();
+
+  return 0;
+}
+
+
+
+
+J1939 is extended CAN protocol :
+===============================
+It is typically used in 
+
+- Diesel power train applications 
+- In Vehicle networks for trucks and buses
+- Agriculture and forestry Machinary 
+- Military vehicles 
+- Fleet management Systems
+- Recreational Vehilces 
+- Marine Navigational Systems
+- Fleet management Systems 
+
+
+It was developed in 1995 with 29 bit identifier respectively 11 and 18 bit 
+
+11 bit identifier allows 2^11 messages = 2048 different messages whereas 29 bit identifier allows 2^29 allows 536 million messages 
+
+29 bit frame has Identifier  Extension Bit which is Low for standard frame and high for 29 bit frame 
+
+During Bus arbitration the standard 11 bit message will have high priority than an extended 29 bit message ID 
+
+CAN was originally designed for automobiles but the demand for microprocessors increased and high speed requirment of serial communication system 
+
+The CAN properties can be summarized as:
+􀂾 Multi-Master priority based bus access
+􀂾 Non-destructive contention-based arbitration
+􀂾 Multicast message transfer by message acceptance filtering
+􀂾 Remote data request
+􀂾 Configuration flexibility
+􀂾 System-wide data consistency
+􀂾 Error detection and error signaling
+􀂾 Automatic retransmission of messages that lost arbitration
+􀂾 Automatic retransmission of messages that were destroyed by errors
+􀂾 Distinction between temporary errors and permanent failures of nodes
+􀂾 Autonomous deactivation of defective nodes
+
+CAN alone is not suitable for machine automation, since its communication between devices is limited to only 8
+bytes per message. 
+
+As a consequence,higher layer protocols such as CANopen for machine control, 
+DeviceNet for factory automation and J1939 for vehicles were designed to provide a real networking technology that support messages of unlimited length and allow a master/slave configuration.
+
+CAN communication bypasses the connection betweeen communication and data link layer 
+
+J1939 with CAN :
+================
+
+- Maximum reliability
+- Excellant error detection and fault confinement 
+- Collision free bus arbitration 
+ 
+ 
+ Demerits :
+ =========
+ It is troubling to learn that the SAE J1939 standard has no problem with compromising the CAN standard. The Network Management (SAE J1939/81), for instance, allows scenarios where two CAN nodes with the
+same message ID can access the bus. 
+
+The result of such a situation is unpredictable. In addition, the SAE J1939 message format (as described
+in SAE J1939/21) does not take advantage of the message filtering as provided by all CAN controllers in the industry
+
+
+J1939 Features :(Message Length upto 1785 bytes)
+================
+Higher-Layer Protocol using CAN as the physical layer
+􀂾 Shielded twisted pair wire
+􀂾 Max. network length of 40 meters (~120 ft.)
+􀂾 Standard baud rate of 250 kBit/sec
+􀂾 Max. 30 nodes (ECUs) in a network
+􀂾 Max. 253 controller applications (CA) where one ECU can manage several CAs
+􀂾 Peer-to-peer and broadcast communication
+􀂾 Support for message length up to 1785 bytes
+􀂾 Definition of Parameter Groups (Predefined vehicle parameters)
+􀂾 Network Management (includes address claiming procedure).
+
+29 bit breakdown 
+
+3 Priority 
+
+18 PGN bit - 1 Bit reserved 1 Bit Data Page 8 bit PDU format 8 bit PDU specific 
+
+8 source address
+
+
+
+
+
+Pattern Problems:
+=================
+#include<iostream>
+using namespace std;
+
+**************
+*************
+***********
+**********
+*********
+*******
+******
+****
+***
+**
+*
+* 
+**
+***
+****
+*****
+******
+*******
+********
+*********
+**********
+***********
+               
+void printPattern1(int n);            
+void printPattern(int n) 
+{ 
+    // Variable initialization 
+    int line_no = 1; // Line count 
+  
+    // Loop to print desired pattern 
+    int curr_star = n+1; 
+    
+    repeat:
+    
+    for (line_no = 1; line_no <= n+1;line_no++ ) 
+    { 
+        // If current star count is less than 
+        // current line number 
+        
+        if (curr_star > line_no) 
+        { 
+           cout << "* "; 
+           continue; 
+        } 
+  
+        // Else time to print a new line 
+        if (curr_star == line_no) 
+        { 
+           cout << "\n";
+           curr_star --; 
+           if(curr_star!=1)
+           goto repeat;
+        }
+        
+    } 
+    printPattern1(n);
+} 
+
+void printPattern1(int n) 
+{ 
+    // Variable initialization 
+    int line_no = 1; // Line count 
+  
+    // Loop to print desired pattern 
+    int curr_star = 0; 
+    for (int line_no = 1; line_no <= n; ) 
+    { 
+        // If current star count is less than 
+        // current line number 
+        if (curr_star < line_no) 
+        { 
+           cout << "* "; 
+           curr_star++; 
+           continue; 
+        } 
+  
+        // Else time to print a new line 
+        if (curr_star == line_no) 
+        { 
+           cout << "\n"; 
+           line_no++; 
+           curr_star = 0; 
+        } 
+    } 
+    
+} 
+
+int main()
+{
+    int n;
+    
+    cout << "Enter the number of stars to be printed untill" << endl;
+    
+    cin >> n;
+    
+    printPattern(n);
+    
+    
+    return 0;
+}
+
+
+
+Heart pattern problem:
+==============
+//Program to print heart pattern
+#include<stdio.h>
+#include<conio.h>
+#include<iostream>
+using namespace std;
+
+int main()
+{
+
+ int n,i,j;
+ cout<<"Enter limit for pattern : ";
+ cin>>n;
+ if(n%2==0)
+  n++;
+
+ for(i=0;i<n;i++)
+ {
+  for(j=0;j<n;j++)
+  {
+   if(i==0&&(j>=n/5&&j<=n/2-n/5)||i==0&&(j>=n/2+n/5&&j<=(n-1)-n/5))
+    cout<<"* ";
+   else if(i>0&&i<=n/5&&(j==n/5-i||j==n/2+n/5-i||j==n/2-n/5+i||j==(n-1)-n/5+i))
+    cout<<"* ";
+   else if((i>n/5&&i<=n/2)&&(j==0||j==n-1))
+    cout<<"* ";
+   else if(i>n/2&&(j==i-n/2||j==(n-1)-(i-n/2)))
+    cout<<"* ";
+   else
+    cout<<"  ";
+  }
+  cout<<"\n";
+ }
+ getch();
+}
+
+memset() function:
+==================
+void *memset(void *ptr, int x, size_t n);
+
+// C program to demonstrate working of memset() 
+#include <stdio.h> 
+#include <string.h> 
+  
+int main() 
+{ 
+    char str[50] = "GeeksForGeeks is for programming geeks."; 
+    printf("\nBefore memset(): %s\n", str); 
+  
+    // Fill 8 characters starting from str[13] with '.' 
+    memset(str + 13, '.', 8*sizeof(char)); 
+  
+    printf("After memset():  %s", str); 
+    return 0; 
+} 
+
+memcpy function :
+================
+
+void * memcpy(void *to, const void *from, size_t numBytes);//Copies the contents of one string to another 
+
+#include <stdio.h> 
+#include <string.h> 
+  
+int main () 
+{ 
+  char str1[] = "Geeks";   
+  char str2[] = "Quiz";   
+  
+  puts("str1 before memcpy "); 
+  puts(str1); 
+  
+  /* Copies contents of str2 to sr1 */
+  memcpy (str1, str2, sizeof(str2)); 
+  
+  puts("\nstr1 after memcpy "); 
+  puts(str1); 
+  
+  return 0; 
+} 
+
+O/p:
+===
+str1 before memcpy 
+Geeks
+
+str1 after memcpy 
+Quiz
+
+Program 1: For Printing N largest Elements (A function which takes an array and returns N largest Elements present in an array)
+===============================================================================================================================
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+void swap(int *a,int *b)
+{
+    int temp = *a;
+    *a =*b;
+    *b = temp;
+}
+
+int* Nlargest(int arr[],int size,int n)
+{
+    for(int i=0;i<size-1;i++)
+    {
+        for(int j=0;j<size-1;j++)
+        {
+            if(arr[j]>arr[j+1])
+            swap(&arr[j],&arr[j+1]);
+        }
+    }
+    return arr;
+}
+
+int  main()
+{
+  int arr[] = {7,8,9,1,2,3,5,15};
+  
+  int size = sizeof(arr)/sizeof(arr[0]);
+  int x =5;
+  for(int i =0;i<size;i++)
+  {
+      cout << arr[i] << " ";
+
+  }
+  
+  cout << endl;
+  
+  Nlargest(arr,size,x);
+  //7 8 9 1 2 3 5 15
+  
+  //1 2 3 5 7 8 9 15
+  
+  for(int i=size-1;i>size-1-x;i--)
+  {
+      cout << arr[i] << " ";
+
+  }
+  
+  return 0;
+  
+}
+
+Program 2: Program to reverse a String without using Library function ( Write a Function which takes a String and Reverse the String)
+======================================================================================================================================
+
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+char * ReverseString(char *pString)
+{
+    if(NULL==pString)
+    return NULL;
+    
+    char *pStart = pString;
+    
+    char *pEnd = pStart+strlen(pString)-1;
+    
+    while(pStart < pEnd)
+    {
+        char temp = *pStart;
+        *pStart   = *pEnd;
+        *pEnd     =  temp;
+        
+        pStart++;
+        pEnd--;
+    }
+    return pString;
+}
+
+int  main()
+{
+  char str[50] = "GUBED";
+  
+  cout << str << endl;
+  
+  cout << ReverseString(str)/*Debug*/ << endl;
+  
+  return 0;
+  
+}
+
+Program 3: Program to check if a String is palindrome or not
+=============================================================  
+
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+char * ReverseString(char *pString)
+{
+    if(NULL==pString)
+    return NULL;
+    
+    char *ptr = (char*)malloc(strlen(pString)+1);
+    
+    strcpy(ptr,pString);
+    
+    char *pStart = ptr;
+    
+    char *pEnd = pStart+strlen(ptr)-1;
+    
+    while(pStart < pEnd)
+    {
+        char temp = *pStart;
+        *pStart   = *pEnd;
+        *pEnd     =  temp;
+        
+        pStart++;
+        pEnd--;
+    }
+    return ptr;
+}
+
+int  main()
+{
+  char str[50] = "MADAM";
+  
+  cout << str << endl;
+  
+  char *str1 = ReverseString(str);
+  
+  if(strcmp(str,str1)==0)
+  {
+    cout << "The Given string is a Palindrome String" << endl;
+  }
+  
+  else
+  {
+    cout << "The Given string is not a Palindrome String" << endl;
+  }
+  
+  free(str1);
+  
+  return 0;
+  
+}
+
+Program 4: Roots of a quadratic Equation:
+=========================================
+#include <iostream>
+#include<iomanip>
+#include<cmath>
+using namespace std;
+
+int main() 
+{
+    double a,b,c,disc,root1,root2,real,imag;
+    
+    cout << "Enter the coeficients for a,b,c" << endl;
+    
+    cin>>a >> b >> c ;
+    
+    cout << std::setprecision(3) << a << b <<c << endl;
+    
+    disc = b*b -4*a*c;
+    
+    cout << disc << endl;
+    
+    if(disc>0)
+    {
+        root1 = (-b+sqrt(disc))/2*a;
+        root2 = (-b-sqrt(disc))/2*a;
+        
+        cout << "Root 1 is : \n" << root1 << endl;
+        cout << "Root 2 is : \n" << root2 << endl;
+    }
+  
+  if(disc==0)
+    {
+        root1 = (-b/2*a);
+        root2 = (-b/2*a);
+        
+        cout << "Root 1 is : \n" << root1 << endl;
+        cout << "Root 2 is : \n" << root2 << endl;
+    }
+      
+   if(disc < 0)  
+    {
+        real = (-b/2*a);
+        imag = (sqrt(-disc)/2*a);
+        
+        cout << "Root 1 is : \n" << real<<""<<"+" <<"i"<<imag << endl;
+        cout << "Root 2 is : \n" << real<<""<<"-" <<"i"<<imag << endl;
+    }
+    
+    return 0;
+}
+
+Program 5 :Leap Year
+=====================
+
+#include <iostream>
+using namespace std;
+
+int main() 
+{
+    int num;
+    
+    cout <<" Enter the number" << endl;
+    
+    cin>>num;
+    
+    if(num % 4 == 0)
+    {
+        cout << " Entered Year is a Leap year" << endl;
+    }
+     
+    else if(num % 100 == 0)
+    {
+        cout << " Entered Year is a Leap year" << endl;
+    }
+    
+    else if(num % 400 == 0)
+    {
+        cout << " Entered Year is a Leap year" << endl;
+    }
+    
+    else
+    cout << " Entered Year is not a Leap year" << endl;
+    
+    return 0;
+}
+
+Program 6: Fibbonaci Series (With and without Recursion)
+========================================================
+
+#include <iostream>
+using namespace std;
+
+int main() 
+{
+    int num,res;
+    
+    int a=0;
+    
+    int b =1;
+    
+    cout <<" Enter the number of terms" << endl;
+    
+    cin>>num;
+    
+    for(int i =1;i<=num;i++)
+    {
+        cout << a << " ";
+        
+        res = a+b;
+        a = b;
+        b = res;
+    }
+    
+    return 0;
+}
+
+Program 7 : GCD of two numbers
+===============================
+#include <iostream>
+using namespace std;
+
+
+int GCD(int n1,int n2)
+{
+    int gcd;
+    
+     for(int i=1;i<=n1&&i<=n2;i++)
+    {
+        if(n1 % i == 0 && n2 % i == 0)
+        {
+             gcd = i;
+        }
+    }
+    return gcd;
+}
+
+int GCD1(int n1,int n2)
+{
+    while(n1!=n2)
+    {
+        if(n1 > n2)
+        {
+            n1 -=n2;
+           
+        }
+        
+        else
+        n2 -=n1;
+    }
+    return n1;
+}
+
+int GCD2(int n1,int n2)
+{
+    n1 =(n1>0)? n1 :-n1;
+    n2 =(n2>0)? n2 :-n2;
+    
+    while(n1!=n2)
+    {
+        if(n1 > n2)
+        {
+            n1 -=n2;
+           
+        }
+        
+        else
+        n2 -=n1;
+    }
+    return n1;
+}
+
+int main() 
+{
+    
+    int n1,n2;
+    
+    cout << "Enter the numbers" << endl;
+    
+    cin>>n1>>n2;
+    
+    cout << "GCD of n1 and n2 is :" << GCD2(n1,n2) << endl;
+    
+    return 0;
+}
+
+Program 8 : LCM from GCD :
+==========================
+#include <iostream>
+using namespace std;
+
+
+int GCD(int n1,int n2)
+{
+    int gcd;
+    
+     for(int i=1;i<=n1&&i<=n2;i++)
+    {
+        if(n1 % i == 0 && n2 % i == 0)
+        {
+             gcd = i;
+        }
+    }
+    return gcd;
+}
+
+int GCD1(int n1,int n2)
+{
+    while(n1!=n2)
+    {
+        if(n1 > n2)
+        {
+            n1 -=n2;
+           
+        }
+        
+        else
+        n2 -=n1;
+    }
+    return n1;
+}
+
+int GCD2(int n1,int n2)
+{
+    n1 =(n1>0)? n1 :-n1;
+    n2 =(n2>0)? n2 :-n2;
+    
+    while(n1!=n2)
+    {
+        if(n1 > n2)
+        {
+            n1 -=n2;
+           
+        }
+        
+        else
+        n2 -=n1;
+    }
+    return n1;
+}
+
+int main() 
+{
+    
+    int n1,n2;
+    
+    cout << "Enter the numbers" << endl;
+    
+    cin>>n1>>n2;
+    
+    //cout << "GCD of n1 and n2 is :" << GCD2(n1,n2) << endl;
+    
+    int LCM = n1*n2/GCD2(n1,n2);
+    
+    cout << "LCM of n1 and n2 is :" << LCM << endl;
+    
+    return 0;
+}
+
+Program 9 : checking Armstrong for an nth digit number 
+======================================================
+
+#include <math.h>
+#include <stdio.h>
+#include<iostream>
+using namespace std;
+
+int main() {
+    
+    int num, originalNum, remainder, n = 0;
+    int result = 0.0;
+    cout<<"Enter an integer: ";
+    
+    cin>>num;
+    
+    
+    originalNum = num;
+    
+    while (originalNum != 0) {
+        originalNum /= 10;
+        ++n;
+    }
+    
+    originalNum = num;
+    
+    while (originalNum != 0) {
+        remainder = originalNum % 10;
+        result += pow(remainder, n);
+        originalNum /= 10;
+    }
+    
+    if (result == num)
+        printf("%d is an Armstrong number.", num);
+    else
+        printf("%d is not an Armstrong number.", num);
+    return 0;
+} 
+
+Program 10: Prime numbers between two intervals:
+================================================
+#include <iostream>
+using namespace std;
+
+bool checkPrimeNumber(int n);
+
+int main()
+{
+    int n1, n2, i;
+   
+    bool flag;
+    
+    cout<<"Enter two positive integers: ";
+    
+    cin>> n1 >> n2;
+    
+    cout << "Prime numbers between n1 and n2 are : " << endl;
+    
+    for (i = n1 + 1; i < n2; i++) 
+    {
+        // flag will be equal to false if i is prime
+        
+        flag = checkPrimeNumber(i);
+        
+        if (flag == false)
+        
+            cout << i << " ";
+    }
+    
+    return 0;
+}
+// user-defined function to check prime number
+bool checkPrimeNumber(int n) 
+{
+    int j;
+    
+    bool flag = false;
+    
+    for (j = 2; j < n; j++)
+    {
+        if (n % j == 0) 
+        {
+            flag = true;
+            break;
+        }
+    }
+    return flag;
+}
+
+Program 11 : BInary to Dec and Dec to Bi conversion:
+====================================================
+
+#include<iostream>
+#include <math.h>
+using namespace std;
+
+int Bitodec(long long n)
+{
+    int dec=0;
+    int i=0;
+    int r;
+    
+    while(n!=0)
+    {
+        r = n % 10;
+        n /= 10;
+        dec += r*pow(2,i);
+        ++i;
+    }
+}
+
+long long DectoBi(int n)
+{
+    long long bin = 0;
+    
+    int i =1;
+    
+    int r;
+    
+    while(n!=0)
+    {
+        r = n % 2;
+        n/=2;
+        bin+= r*i;
+        i*=10;
+    }
+    return bin;
+}
+
+int main() 
+{
+    long long n;
+    
+    cout << "Enter the Binary number " << endl;
+    
+    cin>>n;
+    
+    cout<< "The Decimal Number is :" << Bitodec(n)<< endl;
+
+    cout<< "The Binary Number is :" << DectoBi(Bitodec(n)) << endl;
+    return 0;
+}
+
+Program 12 : To overload << and >> operator :
+==============================================
+#include<iostream>
+using namespace std;
+
+
+class Complex
+{
+    private:
+    
+    float real;
+    float imag;
+    
+    public:
+    
+    
+    Complex(float _real=0,float _imag=0):real(_real),imag(_imag){}
+    
+    friend ostream & operator << (ostream &out,const Complex &obj);
+    friend istream & operator >> (istream &in,Complex &obj);
+};
+
+ostream & operator << (ostream &out,const Complex &obj)
+{
+    out << obj.real;
+    
+    out << "+i" << obj.imag << endl;
+    
+    return out;
+}
+
+istream & operator >> (istream &in,Complex &obj)
+{
+    cout << " Enter the real part : ";
+    in >> obj.real;
+    
+    cout << " Enter the imaginary part : ";
+    in >> obj.imag;
+    
+    return in;
+}
+
+
+int main()
+{
+    Complex obj;
+    
+    cin >> obj;
+    
+    cout << "The complex number is :" << endl;
+    
+    cout << obj;
+    
+    return 0;
+}
+
+Friend function :
+=================
+Points to remember is 
+
+friend function is not a class member it is just a friend i.e it can acces private data so we cannot call it with object 
+
+#include <iostream>
+using namespace std;
+
+class Wife;
+
+class Husband
+{
+    private:
+    
+    char name[10];
+    int salary;
+    
+    public:
+    
+    Husband()    
+    {
+        cout<<"Enter Name"<<endl;
+        cin>>name;
+        cout<<"Enter the Salary"<<endl;
+        cin>>salary;
+    }
+   
+    friend void get_data(Husband &obj);
+    
+    friend int totalsalary(Husband h1,Wife w1);
+    
+};
+
+class Wife
+{
+    private:
+    
+    char name[10];
+    int salary;
+    
+    public:
+    
+    Wife()
+    {
+        cout<<"Enter Name"<<endl;
+        cin>>name;
+        cout<<"Enter the Salary"<<endl;
+        cin>>salary;
+    }
+    
+    friend void get_data(Wife &obj);
+ 
+    
+    friend int totalsalary(Husband h1,Wife w1);
+};
+
+void get_data(Husband &obj)
+{
+
+    cout<<" Name is"<< obj.name<<endl;
+    cout<<"The Salary is"<< obj.salary<<endl;
+        
+}
+
+void get_data(Wife &obj)
+{
+
+    cout<<"Name is"<< obj.name <<endl;
+    cout<<"The Salary is"<< obj.salary <<endl;
+        
+}
+    
+int totalsalary(Husband h1,Wife w1)
+{
+    
+     return h1.salary + w1.salary;
+}
+
+int main()
+{
+  Husband a1;
+  Wife a2;
+  
+  get_data(a1);
+  get_data(a2);
+  
+   cout<<"TotalSalary "<< totalsalary(a1,a2) <<endl;
+   return 0;
+}
+
+Friend Class :
+==============
+#include <iostream>
+using namespace std;
+class Girl;
+
+class Boy
+{
+    private:
+    
+    int income1;
+    int income2;
+    
+    public:
+    
+	Boy()
+	{ 
+		cout<<"Enter income1"<<endl;
+        cin>>income1;
+        cout<<"Enter income2"<<endl;
+        cin>>income2;
+      
+    }
+    void get_data()
+    {
+        cout<<"Salary from first source is"<<income1<<endl;
+        
+       cout<<"Salary from second source is"<<income2<<endl;        
+    }
+    
+friend class Girl;
+
+};
+
+
+class Girl
+
+{
+    public:
+    
+	Girl(){}
+    
+	Girl(Boy &b)
+    {
+       cout<<"Girl class printing "<<endl;
+        
+		b.income1= b.income1+10000;
+		b.income2= b.income2+2000;
+		
+		cout << b.income1 << endl;
+		cout<<  b.income2 << endl;
+    }
+
+};
+
+int main()
+
+{
+    Boy a1;
+    a1.get_data();
+    
+	cout<<"After friend changes"<<endl;
+	
+	Girl g1(a1);
+	
+    a1.get_data();
+	
+    return 0;
+
+}
+
+
+Shallow Copy:
+=========
+#include<iostream> 
+#include<cstring> 
+using namespace std; 
+  
+class String 
+{ 
+private: 
+    char *s; 
+    int size; 
+public: 
+    String(const char *str = NULL); // constructor 
+   // ~String() { delete [] s;  }// destructor 
+    void print() { cout << s << endl; } 
+    void change(const char *);  // Function to change 
+}; 
+  
+String::String(const char *str) 
+{ 
+    size = strlen(str); 
+    s = new char[size+1]; 
+    strcpy(s, str); 
+} 
+  
+void String::change(const char *str) 
+{ 
+    delete [] s; 
+    size = strlen(str); 
+    s = new char[size+1]; 
+    strcpy(s, str); 
+} 
+  
+int main() 
+{ 
+    String str1("GeeksQuiz"); 
+    String str2 = str1; 
+  
+    str1.print(); // what is printed ? 
+    str2.print(); 
+  
+    str2.change("GeeksforGeeks"); 
+  
+    str1.print(); // what is printed now ? 
+    str2.print(); 
+    return 0;
+
+}
+
+Deep copy:
+=============
+
+#include<iostream>
+#include<string.h>
+using namespace std;
+
+class String
+{
+    private:
+    
+    char *s;
+    int size;
+    
+    public:
+    
+    String(const char *q);
+    ~String(){ delete[] s; }
+    String(const String &old_str);
+    
+    void print()
+    {
+        cout << s << endl;
+    }
+    
+    void change(const char*);
+};
+
+String :: String(const char *str)
+{
+    size = strlen(str);
+    
+    s = new char[size+1];
+    
+    strcpy(s,str);   
+}
+
+String :: String(const String &old_str)
+{
+    size = old_str.size;
+    
+    s = new char[size+1];
+    
+    strcpy(s,old_str.s);
+    
+}
+
+
+void String :: change( const char *str)
+{
+    delete [] s;
+    size = strlen(str);
+    s = new char[size+1];
+    strcpy(s,str);
+}
+
+int main()
+{
+    String str1("GeeksQuiz"); 
+    String str2(str1); 
+  
+    str1.print(); // what is printed ? 
+    str2.print(); 
+  
+    str2.change("GeeksforGeeks"); 
+  
+    str1.print(); // what is printed now ? 
+    str2.print(); 
+    return 0;
+
+}
+
+
+Questions to discuss :
+
+
+i) printf("%d",8); 
+ii) printf("%d",090); 
+iii) printf("%d",00200); 
+iv) printf("%d",0007000);  
+
+
+
+
+
+Strings can be treated as character pointer or character arrays
+================================================================
+
+char str[4] = "GFG";
+
+char str[4] = {'G','F','G',\0};
+
+
+1)String using character pointers:
+================================
+
+When string value is directly assigned to the pointer, in most of the compilers, its stored in a read-only block(generally in data Segment) that is shared among functions
+
+
+char * str = "GFG";
+
+In the above line “GfG” is stored in a shared read-only location, but pointer str is stored in a read-write memory. 
+
+You can change str to point something else but cannot change value at present str.
+
+So this kind of string should only be used when we don’t want to modify string at a later stage in the program.
+
+
+ #include<iostream>
+ using namespace std;
+ 
+ int main()
+ {
+ char *str = "GEEKS";
+ 
+ cout << "Size of the String before : " << str << endl;
+ 
+ int size = 4;
+ 
+ *(str+0) = 'G';  
+ *(str+1) = 'f';   
+ *(str+2) = 'G';   
+ *(str+3) = '\0'; 
+ 
+ cout << "Size of the String after : " << str << endl;
+ 
+ return 0;
+ 
+ }
+
+o/p:
+===
+
+Segmentation Fault as the String is stored in Read-Only memory and trying to modify/access the memory which is not accessible will lead to segmentation fault
+
+There are two ways to get rid of the problem we are facing above 
+
+Solution 1 : Store the String in Stack
+Solution 2 : Store the String in Heap
+
+Solution 1 :
+============
+
+#include<iostream>
+using namespace std;
+ 
+ int main()
+ {
+ char str[] = "GEEKS";
+ 
+ cout << "Size of the String before : " << str << endl;
+ int size = 4;
+ 
+
+  str[0] = 'G';  
+  str[1] = 'f';   
+  str[2] = 'G';   
+  str[3] = '\0'; 
+ 
+ cout << "Size of the String after : " << str << endl;
+ 
+ return 0;
+ 
+ }
+
+O/p :
+=====
+
+Size of the string before : GEEKS
+Size of the string after : GFG
+
+Solution 2 :
+============
+
+2) Dynamically allocated in heap segment :
+ ==========================================
+ #include<iostream>
+ using namespace std;
+ 
+ int main()
+ {
+ char *str = "GEEKS";
+ 
+ cout << "Size of the String before : " << str << endl;
+ int size = 4;
+ 
+ str = (char *)malloc(sizeof(char)*4);
+ 
+ *(str+0) = 'G';  
+ *(str+1) = 'f';   
+ *(str+2) = 'G';   
+ *(str+3) = '\0'; 
+ 
+ cout << "Size of the String after : " << str << endl;
+ 
+ return 0;
+ 
+ }
+ 
+ 
+ Another example to illustrate the accesibility of two strings while returning from a function 
+ 
+ 1) Created in Read only Segment 
+ 2) Another created on Stack
+ 3) Another created on Heap
+ 
+ 1) Created in Read only Segment 
+ =================================
+ 
+ #include<iostream>
+ using namespace std;
+ 
+ char * getString()
+ {
+	char *str = "GEEKS";
+
+    return str;
+ 
+ }
+ 
+ int main()
+ {
+ 
+	cout << getString() << endl;
+	return 0;
+ }
+ 
+ 
+ O/p : GEEKS
+ 
+ 2) Created on Heap 
+ ==================
+ 
+ 
+ #include<iostream>
+ using namespace std;
+ 
+ char * getString()
+ {
+	char *str = nullptr;
+	
+    str = (char *)malloc(sizeof(char)*4);
+ 
+    *(str+0) = 'G';  
+    *(str+1) = 'f';   
+    *(str+2) = 'G';   
+    *(str+3) = '\0'; 
+
+    return str;
+ 
+ }
+ 
+ int main()
+ {
+ 
+	cout << getString() << endl;
+	return 0;
+ }
+ 
+ O/p : GFG;
+ 
+ 3) Created on Stack;
+ ======================
+ 
+  #include<iostream>
+ using namespace std;
+ 
+ char * getString()
+ {
+	char str[] = "GFG";
+	
+    return str;
+ 
+ }
+ 
+ int main()
+ {
+ 
+	cout << getString() << endl;
+	return 0;
+ }
+ 
+ When we return a string which is locally created it returns a Garbage value 
+ 
+ 
+ 
+ 
+Operator overloading :
+=======================
+#include<iostream>
+using namespace std;
+
+class facebook
+{
+    public:
+    
+    string F_Name;
+    
+    string L_Name;
+    
+    int Age;
+    
+    long P_N;
+    
+    string Address;
+    
+    facebook()
+    
+    facebook(string FN,string LN,int age,long p_n,string Ad):F_Name(FN),L_Name(LN),Age(age),P_N(p_n),Address(Ad){}
+    
+    void set_data(string FN,string LN,int age,long p_n,string Ad)
+    {
+         F_Name = FN;
+    
+        L_Name  = LN;
+    
+        int Age = age;
+    
+        long P_N = p_n;
+    
+        Address  = Ad;
+        
+    }
+
+    friend ostream& operator << (ostream &out,const facebook &obj)
+    {
+        out << "First Name is :" << obj.F_Name << endl;
+        out << "Last Name is :" << obj.L_Name << endl;
+        out << "Age is :" << obj.Age << endl;
+        out << "Phone number is :" << obj.P_N <<endl;;
+        out << "Address is :" << obj.Address << endl;
+        
+        return out;
+    }
+};
+
+int main()
+{
+    facebook obj1("Rizwan Ahmed","Shaik",28,2169259404,"110 Andover Dr Glendale Heights Illinois 60139");
+    
+    cout << obj1;
+    
+    return 0;
+}
+
+conditional variable:
+==================
+#include<iostream>
+#include<thread>
+#include<mutex>
+#include<condition_variable>
+using namespace std;
+//[](){}- Lambda Function 
+mutex mtx;
+
+int start=1;
+
+condition_variable cv;
+
+void printEven(bool flag,int end)
+{
+    
+    while(start<end)
+    {   
+        unique_lock<mutex> ul(mtx);
+        cv.wait(ul,[&](){return start%2==flag;});
+        cout<< start << endl;
+        start++;
+        //mtx.unlock();
+        cv.notify_one();
+        
+    }
+    
+}
+
+/*
+void printOdd(int end)
+{
+    unique_lock<mutex> lk(mtx);
+    
+    while(start<end)
+    {
+        cv.wait(lk,[](){return start%2!=0;});
+        cout<< start << " : is Odd" << endl;
+        start++;
+        cv.notify_one();
+    }
+}
+*/
+int main()
+{
+    thread t1(printEven,true,1000);
+    
+    thread t2(printEven,false,1000);
+    
+
+    t1.join();
+    t2.join();
+    
+    return 0;
+}
+
+
+
+//1 Producer thread
+//1 Consumer thread
+//Producer Thread is producing updating the queue at the end
+//Consumer Thread is consuming from the begining  and updating the queue
+
+#include <iostream>
+#include<thread>
+#include<mutex>
+#include<condition_variable>
+#include<deque>
+using namespace std;
+
+mutex mtx;
+condition_variable cv;
+
+deque<int> dq;
+
+int inventory_size  = 20;
+
+int count = 0;
+
+void Produce()
+{
+    int i =0;
+    
+    cout << " Producing Started" << endl;
+    
+    while(true)
+    {
+        unique_lock<mutex> ul(mtx);
+        cv.wait(ul,[](){return count<inventory_size;});
+        dq.push_back(i);
+        cout<< " Producing :" << i << endl;
+        i++;
+        count++;
+        cv.notify_all();
+    }
+    
+}
+
+void Consume()
+{
+    cout << "Consumer Started consuming" << endl;
+    while(true)
+    {
+        unique_lock<mutex> ul(mtx);
+        
+        cv.wait(ul,[](){return count!=0;});
+        cout<< " Consuming "  << dq.back() << endl;
+        dq.pop_back();
+        count--;
+        cv.notify_all();
+    }
+}
+
+void printDeque()
+{
+    unique_lock<mutex> ul1(mtx);
+    
+    cv.wait(ul1);
+    cout << "Printing Deque" << endl;
+    
+    for(const auto &e : dq)
+    
+    cout << e << " ";
+    
+    cout << "\n";
+}
+
+int main() {
+  thread t1(Produce);//Global function
+  thread t2(Consume);
+  thread t3(printDeque);
+  
+  t1.join();
+  t2.join();
+  t3.join();
+  
+  return 0;
+}
+
+Producer - Consumer Problem using Class member function :
+=========================================================
+
+
+#include<iostream>
+#include<thread>
+#include<mutex>
+#include<condition_variable>
+using namespace std;
+
+mutex mtx;
+condition_variable cv;
+
+deque<int> dq;
+
+class Producer
+{
+    public:
+    static int count;
+    static int inventory_size;    
+    
+    void Produce()
+    {
+        int i =0;
+        
+        cout << " Producing Started" << endl;
+        
+        while(true)
+        {
+            unique_lock<mutex> ul(mtx);
+            cv.wait(ul,[](){return count<inventory_size;});
+            dq.push_back(i);
+            cout<< " Producing :" << i << endl;
+            i++;
+            count++;
+            cv.notify_all();
+        }
+    }
+
+};
+
+int Producer ::count = 0;
+int Producer ::inventory_size = 20;
+
+class Consumer
+{
+    public:
+    
+    void Consume()
+    {
+        cout << "Consumer Started consuming" << endl;
+        while(true)
+        {
+            unique_lock<mutex> ul(mtx);
+            
+            cv.wait(ul,[](){return Producer::count!=0;});
+            cout<< " Consuming "  << dq.back() << endl;
+            dq.pop_back();
+            Producer::count--;
+            cv.notify_all();
+        }
+    }
+
+};
+
+int main()
+{
+    Producer p1;
+    Consumer c1;
+    
+    thread t1(&Producer::Produce,&p1);
+    thread t2(&Consumer::Consume,&c1);
+    thread t3([]()
+    {
+        unique_lock<mutex> ul1(mtx);
+        
+        cv.wait(ul1);
+        cout << "Printing Deque" << endl;
+        
+        for(const auto &e : dq)
+        
+        cout << e << " ";
+        
+        cout << "\n";
+            
+    });
+    
+    t1.join();
+    t2.join();
+    t3.join();
+    
+    return 0;
+}
+
+adopt_lock, defer_lock
+=======================
+#include<iostream>
+#include <mutex>
+#include <thread>
+using namespace std; 
+
+struct bank_account {
+    explicit bank_account(int balance) : balance(balance) {}
+    int balance;
+    std::mutex m;
+};
+ 
+void transfer(bank_account &from, bank_account &to, int amount)
+{
+    // lock both mutexes without deadlock
+    std::lock(from.m, to.m);
+    // make sure both already-locked mutexes are unlocked at the end of scope
+    std::lock_guard<std::mutex> lock1(from.m, std::adopt_lock);
+    std::lock_guard<std::mutex> lock2(to.m, std::adopt_lock);
+ 
+// equivalent approach:
+//    std::unique_lock<std::mutex> lock1(from.m, std::defer_lock);
+//    std::unique_lock<std::mutex> lock2(to.m, std::defer_lock);
+//    std::lock(lock1, lock2);
+ 
+    from.balance -= amount;
+    to.balance += amount;
+}
+ 
+int main()
+{
+    bank_account my_account(100);
+    bank_account your_account(50);
+ 
+    std::thread t1(transfer, std::ref(my_account), std::ref(your_account), 10);
+    
+    std::thread t2(transfer, std::ref(your_account), std::ref(my_account), 5);
+    
+    t1.join();
+    t2.join();
+    
+    cout << my_account.balance << endl;
+    cout << your_account.balance << endl;
+
+    
+}
+
+Dining Philosopher :
+=====================
+
+1 Class for  Philosopher 
+
+
+
+1) What is Semaphore?
+2)How to use Semaphore in System V ?
+3) How to use Semaphore from Posix?
+4)How to create a sema phore class using mutex and condition variable ?
+5)Difference between the one which we created ?
+
+
+typedef vs #define :
+=====================
+
+It is a compile time operation 
+
+typedef keyword is used to create an alias name of already existing data type 
+
+Rules :
+========
+No two similar type defs are allowed in same scope 
+Type checking occurs for each typedef declared 
+
+
+typedef unsigned int Uint 
+typedef char* chr
+
+#include<iostream>
+using namespace std;
+
+Ex:1
+
+typedef unsigned int Uint;
+
+int main()
+{
+	Uint Data1 = 100;
+	
+	Uint Data2 = 200;
+	
+	cout << "Data1: " << Data1 << endl;
+	
+	cout << "Data2: " << Data2 << endl;
+	
+	return 0;
+}
+
+O/p:
+====
+Data1 : 100;
+
+Data2:  200;
+
+Ex:2
+typedef can also be used with Fp to create a new variable 
+
+fp var , var can store the address of any fp of the given prototype
+ 
+#include<iostream>
+using namespace std;
+
+typedef void(*fp)(int,int);
+
+void compute(fp var, int a, int b)
+{
+    var(a,b);
+}
+
+void sum(int a,int b)
+{
+    cout<< "The value of Addition of a and b is: "<< a+b << endl;
+}
+
+void diff(int a,int b)
+{
+    cout<< "The value of Substraction of a and b is: "<< a-b << endl;
+}
+
+int main()
+{
+	compute(&sum,19,15);
+	
+	compute(&diff,19,15);
+	
+	return 0;
+}
+
+#define :
+==========
+
+It is a preprocessor directive meaning it takes place in preprocessing time 
+
+It is used for value substitution at Preprocessing time 
+
+Rules:
+======
+There is no scope rule for #define and there is no typechecking for #define 
+
+Ex:1
+
+#include<iostream>
+using namespace std;
+
+#define Value 10;
+
+int main()
+{
+	cout << "Value is :" << Value << endl;
+	return 0;
+}
+
+O/p:
+====
+Value is : 10
+
+
+#include <iostream>
+#include<string>
+#include<map>
+using namespace std;
+
+/*
+  1.	Implement a function that computes the histogram of a string. For example, if the input were "abac" we want to determine that there are 2 'a', 1 'b' and 1 'c'.
+*/
+
+/*a,2    */
+map<char,int> histogramofString(string str)
+{
+  const int CHAR = 256;
+
+  map<char,int> hist_map;
+
+  
+  int len = str.length();
+/*
+  int count[CHAR] = {0};
+
+  
+  for(int i =0;i< len; i++)
+  {
+      count[str[i]]++;
+  }
+  
+
+  for(int i =0;i< len; i++)
+  {
+      hist_map.insert(make_pair(str[i],count[str[i]]));
+  }
+
+*/  
+  for(int i = 0;i< len; i++)
+  {
+    hist_map[str[i]]++;
+  }
+  
+  return hist_map;
+}
+
+
+int myatoi(string str)
+{
+
+  int res = 0;
+
+  for( int i =0; str[i]!= '\0';i++)
+    {
+       res = res*10+str[i]-'0';
+    }
+
+  return res;
+}
+
+/*2.	Implement the function atoi() which converts a string to its integer equivalent. For example, atoi("123") would return value 123 and atoi("45") would return value 45.*/
+
+int main() {
+
+  std::map<char,int> :: iterator itr;
+  
+ // std::map<char,int> test_map = histogramofString("abac");
+
+  auto test_map = histogramofString("abac");
+
+
+  for(itr = test_map.begin();itr!=test_map.end();itr++)
+    {
+       cout << '\t' << itr->first << '\t' << itr->second
+             << '\n';
+    }
+
+  int res = myatoi("49");
+
+  cout << res << endl;
+}
+

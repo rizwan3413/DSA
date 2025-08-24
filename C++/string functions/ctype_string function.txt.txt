@@ -1,0 +1,24 @@
+strcmp
+======
+
+strcmp function is used to compare two strings 
+
+prototype is 
+
+int strcmp(const char* s1,const char* s2)
+
+	result = strcmp(s1,s2);
+
+if result is 0 s1,s2 are equal 
+
+if result > 0 than s1 > s2
+
+if result < 0 than s1 < s2
+
+
+strcasecmp
+==========  
+
+Hands on experience of working with  etc.
+familarity with with 
+

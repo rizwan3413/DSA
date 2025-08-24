@@ -1,0 +1,10 @@
+
+Types of Casting
+=================
+
+1) Static Cast
+2) Const Cast
+3) Reinterpret
+4) Dynamic Cast
+5) Miscellaneus Type Casting(std::move,std::ref,std::forward)
+

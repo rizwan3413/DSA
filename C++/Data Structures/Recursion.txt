@@ -1,0 +1,115 @@
+
+ Introduction to Recursion
+ ===========================
+ 
+ For Solving Recursion Problem we need to build Recursion Tree
+   *
+ /***The base recursive call will return to the previous Caller and Caller will execute the next statements
+=========================================================================================================*/
+ Example 1 : Find Factorial of a given number using Recursion :
+ 
+  int fact(int n)
+  {
+ 
+if(n==0)
+return 1;
+
+else
+return n*f(n-1);
+ }
+ 
+ int main()
+ {
+ 
+return 0;
+ }
+ 
+ Ex : Let n =4 ;
+ 
+ - 4 *f(3)
+     - 3 *f(2)
+        - 2 f(1)
+     - 1 f(0)
+    1
+    2
+    6
+    24
+
+ Answer : 24
+
+Example 2:
+==========
+ void fun(int n)
+ {
+   if(n<1)
+   return;
+
+   else
+   
+   cout << n << " ";
+   f(n-1);
+   cout << n << " ";
+ }
+ 321123
+   
+  f(3)
+  print(3)
+      f(2)
+  print(2)
+     f(1)
+   print(1)
+f(0);
+
+for f(0) the control is return back to f(1)
+so print(1) will  be executed according to the line 50
+so print(2) will  be executed according to the line 50
+so print(3) will  be executed according to the line 50
+
+321123 will be printed
+     
+               10
+           20      25
+       5      InOrder traversal will give  : 5 20 10  25
+
+void inOrder(Node *root)
+{
+if(root!=nullptr)
+{
+inOrder(root->left);
+cout << root->key << " ";
+inOrder(root->right);
+}
+
+}
+
+Recursion in Tree traversal :
+=============================
+inOrder(10->left);
+inOrder(20->left);
+inOrder(5->left); // 5-Left is nullptr the next statements will be executed
+
+prints(5);
+
+inOrder(5->right);//5-right is nullptr no next statements will be executed so control returns to previous caller
+prints(20);
+
+inOrder(20->right);// 20-right is nullptr no next statements will be executed so control returns to previous caller
+
+prints(10);
+
+inOrder(10->right);//10-right is not nullptr
+25->left is nullptr
+25 will  be printed
+
+inOrder(25->right);//25 right is nullptr so control will be given to parent caller
+         Hence
+
+       5  20 10 25 will be printed
+
+               
+
+  Example no 3: Tower of Hanoi
+ ==============================
+
+
+ 

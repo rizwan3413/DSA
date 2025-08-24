@@ -1,0 +1,209 @@
+
+unique_lock:
+============
+
+This is a type of lock in c++ that provides exclusive ownership 
+
+- It supports manual locking and unlocking 
+- It supports deferred locking 
+- It is movable but not copyable 
+
+std::unique_lock<std::mutex> lock(mtx);
+
+
+With jthread we dont need to join() manually 
+
+
+Example of defer_lock with unique_lock
+======================================
+#include <iostream>
+#include <mutex>
+#include <thread>
+
+class Logger {
+    std::mutex mtx;
+    bool verbose; // Controls whether to log detailed messages
+
+public:
+    Logger(bool verbose_mode = false) : verbose(verbose_mode) {}
+
+    void log(const std::string& message) {
+        // Create unique_lock with defer_lock to delay locking
+        std::unique_lock<std::mutex> lock(mtx, std::defer_lock);
+
+        // Only lock if verbose mode is enabled
+        if (verbose) {
+            lock.lock(); // Explicitly acquire the lock
+            std::cout << "Verbose log: " << message << std::endl;
+            // Lock is automatically released when unique_lock goes out of scope
+        } else {
+            // No locking needed; just print basic message
+            std::cout << "Basic log: " << message << std::endl;
+        }
+    }
+};
+
+void worker(Logger& logger, const std::string& name) {
+    for (int i = 0; i < 3; ++i) {
+        logger.log(name + " iteration " + std::to_string(i));
+    }
+}
+
+int main() {
+    // Create logger with verbose mode enabled
+    Logger logger(true);
+
+    // Run multiple threads to simulate concurrent logging
+    std::thread t1(worker, std::ref(logger), "Thread 1");
+    std::thread t2(worker, std::ref(logger), "Thread 2");
+
+    t1.join();
+    t2.join();
+
+    return 0;
+}
+
+Same example using conditional variable 
+========================================
+
+#include <iostream>
+#include <mutex>
+#include <condition_variable>
+#include <thread>
+#include <queue>
+#include <string>
+
+class Logger {
+    std::mutex mtx;
+    std::condition_variable cv;
+    std::queue<std::string> message_queue; // Queue to store log messages
+    bool is_ready; // Indicates if logger is ready to process messages
+    bool verbose;  // Controls whether to log detailed messages
+
+public:
+    Logger(bool verbose_mode = false) : is_ready(false), verbose(verbose_mode) {}
+
+    // Log a message (called by worker threads)
+    void log(const std::string& message) {
+        // Create unique_lock with defer_lock to delay locking
+        std::unique_lock<std::mutex> lock(mtx, std::defer_lock);
+
+        if (verbose) {
+            // Lock the mutex only if verbose mode is enabled
+            lock.lock();
+            // Wait until the logger is ready to process messages
+            cv.wait(lock, [this] { return is_ready; });
+            // Add message to queue
+            message_queue.push("Verbose log: " + message);
+            lock.unlock(); // Explicitly unlock before notifying
+            cv.notify_one(); // Notify the consumer thread
+        } else {
+            // No locking or waiting; just print basic message
+            std::cout << "Basic log: " << message << std::endl;
+        }
+    }
+
+    // Consumer thread to process the message queue
+    void process_messages() {
+        std::unique_lock<std::mutex> lock(mtx, std::defer_lock);
+
+        // Set logger as ready and notify waiting threads
+        {
+            lock.lock();
+            is_ready = true;
+            lock.unlock();
+            cv.notify_all(); // Notify all waiting threads
+        }
+
+        // Process messages in the queue
+        while (true) {
+            lock.lock();
+            // Wait for messages to be available
+            cv.wait(lock, [this] { return !message_queue.empty(); });
+            // Process the front message
+            std::string message = message_queue.front();
+            message_queue.pop();
+            lock.unlock();
+
+            // Print the message
+            std::cout << message << std::endl;
+
+            // Simulate some processing time
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+    }
+};
+
+void worker(Logger& logger, const std::string& name) {
+    for (int i = 0; i < 3; ++i) {
+        logger.log(name + " iteration " + std::to_string(i));
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
+}
+
+int main() {
+    // Create logger with verbose mode enabled
+    Logger logger(true);
+
+    // Start consumer thread to process messages
+    std::thread consumer(&Logger::process_messages, &logger);
+
+    // Run multiple worker threads to simulate concurrent logging
+    std::thread t1(worker, std::ref(logger), "Thread 1");
+    std::thread t2(worker, std::ref(logger), "Thread 2");
+
+    t1.join();
+    t2.join();
+
+    // Note: In a real application, you'd need a mechanism to stop the consumer thread
+    consumer.detach(); // For simplicity, detach the consumer (not recommended in production)
+
+    return 0;
+}
+
+Here we have producer consumer problem and we are using unique_lock with conditional_variable 
+
+#include <mutex>
+#include <thread>
+#include <iostream>
+using namespace std;
+
+// Global mutex to protect shared_data
+mutex mtx;
+
+// Shared data variable
+int shared_data = 0;
+
+// Function to perform work with the unique_lock
+void do_work(unique_lock<mutex> lock) {
+    // Critical section: safely modify shared_data
+    shared_data += 2;
+    
+    // Lock is automatically released when lock goes out of scope
+}
+
+// Function to increment shared_data
+void increment_data() {
+    // Create a unique_lock object, locking the mutex immediately
+    unique_lock<mutex> lock(mtx); // Locks mutex immediately
+    
+    // Transfer ownership of the lock to do_work using std::move
+    do_work(std::move(lock));
+    
+    // At this point, lock no longer owns the mutex
+}
+
+int main() {
+    {
+        // Create three jthreads that run the increment_data function
+        jthread t1(increment_data);
+        jthread t2(increment_data);
+        jthread t3(increment_data);
+        
+        // jthreads automatically join when they go out of scope (end of this block)
+    }
+    
+    // Output the value of shared_data after all threads have joined
+    cout << "Value of shared variable: " << shared_data << endl;
+    return 0;
+}

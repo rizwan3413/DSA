@@ -1,0 +1,13 @@
+
+Number of Ways to create a Thread:
+==================================
+
+-Using Global Function
+-Directly using function Object
+-Directly using class member function
+-Using Lambda
+-Using Async Method
+-Using Future promise
+-Using Packaged Task
+
+

@@ -1,0 +1,112 @@
+
+Question1:
+==========
+Describe(FindOdd){
+  It(BasicTests){
+    Assert::That(findOdd(V{20,1,-1,2,-2,3,3,5,5,1,2,4,20,4,-1,-2,5}), Equals(5));
+    Assert::That(findOdd(V{1,1,2,-2,5,2,4,4,-1,-2,5}), Equals(-1));
+    Assert::That(findOdd(V{20,1,1,2,2,3,3,5,5,4,20,4,5}), Equals(5));
+    Assert::That(findOdd(V{10}), Equals(10));
+    Assert::That(findOdd(V{1,1,1,1,1,1,10,1,1,1,1}), Equals(10));
+  }
+};
+
+#include <vector>
+
+int findOdd(const std::vector<int>& numbers)
+{
+  //your code here
+  
+  int n = 0;
+  
+  for(int i = 0;i<numbers.size();i++)
+  {
+      n = count(numbers.begin(),numbers.end(),numbers[i]);
+      
+      if(n%2!=0)
+      return numbers[i];
+  } 
+  
+}
+
+Question 2 :
+============
+
+int solution(int number) 
+{
+  int count = 0;
+  
+  for(int i =0;i<number;i++)
+  {
+      if(i%3 == 0|| i%5 ==0)
+      count+=i;
+  }
+    return count;
+ } 
+
+Kadens Algorithm to find max sum subarray and subarray:
+=======================================================
+
+#include <iostream>
+#include <vector>
+#include <climits>
+using namespace std;
+
+//Split even and odd numbers 
+std::vector<int> seperateEvenandOdd(int arr[], int size){
+    std::vector<int> result;
+    
+    for(int i= 0; i < size; i++){
+        if(arr[i] % 2 == 0){
+            result.push_back(arr[i]);    
+        }
+    }
+    
+    for(int i= 0; i < size; i++){
+        if(arr[i] % 2 != 0){
+            result.push_back(arr[i]);    
+        }
+    }
+    return result;
+}
+
+int maxSubArray(vector<int>& nums, int & start, int & end){
+    int curSum = 0;
+    int tempStart = 0;
+    int maxSum = INT_MIN;
+    
+    for(int i = 0;i < nums.size(); ++i ){
+        curSum += nums[i];
+        //maxSum = max(curSum, maxSum);
+        
+        if(curSum > maxSum){
+            maxSum = curSum;
+            start = tempStart;
+            end = i;
+        }
+        
+        if(curSum < 0){
+           curSum = 0;
+           tempStart = i+1;
+        }
+    }
+    return maxSum;
+}
+
+//SPlit even and odd
+int main() {
+    std::vector<int> nums = {3,-4, 5, 4, -1, 7, -8};
+    //int size = sizeof(arr)/sizeof(arr[0]);
+    //auto result = seperateEvenandOdd(arr, size);
+    int start,end = 0;
+    auto val = maxSubArray(nums, start , end);    
+    // for(int num : result){
+    //     std::cout << num << " ";
+    // }
+    std::cout << "Max Subarray is : " << val << std::endl;
+    std::cout << "Subarray is : " << std::endl;
+    for(int i = start; i <= end; ++i){
+        cout << nums[i] << " ";
+    }
+    return 0;
+}

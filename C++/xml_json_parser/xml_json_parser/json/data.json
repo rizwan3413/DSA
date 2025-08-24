@@ -1,0 +1,29 @@
+{
+    "CollegeData": {
+        "CollegeName": "Jawaharlal Nehru Technological University",
+        "Dean": "Dr. Ravindra",
+        "Students": [ 
+            {
+                "name" : "Ravi",
+                "id": 1,
+                "address": "123, Dehradun,6732932",
+                "age":21,
+                "phone": "78273872372"
+            },
+            {
+                "name" : "Mahesh",
+                "id": 2,
+                "address": "34, Bangalore,560037",
+                "age":22,
+                "phone": "78273872371"
+            },
+            {
+                "name" : "Suresh",
+                "id": 3,
+                "address": "123, Dehradun,6732932",
+                "age":40,
+                "phone": "78273872370"
+            }
+        ]
+    }
+}

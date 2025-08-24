@@ -1,0 +1,28 @@
+<CollegeData>
+    <CollegeName>Jawaharlal Nehru Technological University</CollegeName>
+    <Dean> Dr. Ravindra</Dean>
+    <Students>
+        <Student>
+            <name>Ravi</name>
+            <id>1</id>
+            <address>123, Dehradun,6732932 </address>
+            <age>21</age>
+            <phone> 78273872372</phone>
+        </Student>
+        <Student>
+            <name>Mahesh </name>
+            <id>2 </id>
+            <address>34, Bangalore,560037 </address>
+            <age> 22</age>
+            <phone> 78273872371</phone>
+        </Student>
+        <Student>
+            <name>Suresh </name>
+            <id>3 </id>
+            <address>45, Ahmedabad,234566</address>
+            <age> 20</age>
+            <phone> 78273872370</phone>
+        </Student>
+    </Students>    
+</CollegeData>
+

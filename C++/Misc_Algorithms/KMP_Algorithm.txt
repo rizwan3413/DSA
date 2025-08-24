@@ -1,0 +1,40 @@
+
+
+ prefix in a string :
+ ====================
+  
+   Rizwan (Not proper prefix)
+   R
+   Ri
+   Riz 
+   Rizw 
+   Rizwa 
+   Rizwan 
+   
+   Suffix in a string :
+   ====================
+   Rizwan (Not proper suffix)
+   izwan
+   zwan
+   wan
+   an
+   n
+   
+   
+ 
+      
+	  New Problem or Already faced problems    
+   
+   Calculate lps :
+   ================
+   
+   string str = "AAABB"
+   lps[str.size()];
+   lps[0] = 0;
+   
+   lps[] = {0,1,2}
+   
+   lps[1] = ++lps[0];
+   
+   
+   
