@@ -1,0 +1,98 @@
+// C++ program to print top
+// view of binary tree
+// using bfs
+#include <bits/stdc++.h>
+using namespace std;
+
+class Node {
+public:
+    int data;   
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = right = nullptr;
+    }
+};
+
+// Function to return the top view of a binary tree
+vector<int> topView(Node *root) {
+    vector<int> result;
+    if (!root) return result;
+
+    // Map to store the first node at each 
+  	// horizontal distance (hd)
+    map<int, int> topNodes;
+    
+    // Queue to store nodes along with their
+    // horizontal distance
+    queue<pair<Node*, int>> q;
+
+    // Start BFS with the root node at 
+    // horizontal distance 0
+    q.push({root, 0});
+
+    while (!q.empty()) {
+        
+        auto nodeHd = q.front();
+        
+        // Current node
+        Node *node = nodeHd.first;  
+        
+        // Current horizontal distance
+        int hd = nodeHd.second;     
+        q.pop();
+
+        // If this horizontal distance is seen for the first
+      	// time, store the node
+        if (topNodes.find(hd) == topNodes.end()) {
+            topNodes[hd] = node->data;
+        }
+
+        // Add left child to the queue with horizontal
+      	// distance - 1
+        if (node->left) {
+            q.push({node->left, hd - 1});
+        }
+
+        // Add right child to the queue with 
+        // horizontal distance + 1
+        if (node->right) {
+            q.push({node->right, hd + 1});
+        }
+    }
+
+    // Extract the nodes from the map in sorted order 
+  	// of their horizontal distances
+    for (auto it : topNodes) {
+        result.push_back(it.second);
+    }
+
+    return result;
+}
+
+
+int main() {
+    
+    // Create a sample binary tree
+    //     1
+    //    / \
+    //   2   3
+    //  / \ / \
+    // 4  5 6  7
+
+    Node* root = new Node(1);
+    root->left = new Node(2);       
+    root->right = new Node(3);            
+    root->left->left = new Node(4);     
+    root->left->right = new Node(5);   
+    root->right->left = new Node(6);   
+    root->right->right = new Node(7); 
+
+    vector<int> result = topView(root);
+    for (int i : result) {
+        cout << i << " ";
+    }
+    return 0;
+}
