@@ -1,0 +1,86 @@
+
+
+#include <iostream>
+#include<climits>
+#include<vector>
+using namespace std;
+
+//Kadans Algorithm
+int maxSum(vector<int> &nums){
+    int currSum = 0;
+    int maxSum = INT_MIN;
+    
+    for(int val: nums){
+        currSum += val;
+        maxSum = max(currSum, maxSum);
+        
+        if( currSum < 0){
+            currSum = 0;
+        }
+    }
+    return maxSum;
+}
+
+//Single Element
+int singleElement(vector<int> & nums){
+    int unique_elem = 0;
+    
+    for(auto &val : nums){
+        unique_elem = unique_elem ^ val;
+    }
+    return unique_elem;
+}
+
+//PairSum
+vector<int> PairSum(vector<int> &nums, int target){
+    int start = 0;
+    int end = (int)nums.size() -1;
+    
+    while (start < end){
+        int sum = (nums[start] + nums[end]);
+        if(sum > target)
+        {
+            end--;
+        }
+        else if (sum < target){
+            start++;
+        }
+        else {
+            return {start, end};
+        }
+    }
+    return {-1, -1};
+}
+
+{ 1 2 2 3 1 1}
+
+//Majority Element
+int majorityElement(vector<int> &nums){
+    int freq,ans = 0;
+    
+    for(int i = 0; i < nums.size();i++){
+        if(freq == 0) ans = nums[i];
+        
+        if(ans == nums[i]) freq++;
+        
+        else
+         freq--;
+    }
+    return ans;
+}
+
+
+
+int main()
+{
+    vector<int> vec = { 3, -4 , 5 , 7, -1, 8};
+    std::cout << "Max Sum from the Array is : " << maxSum(vec) << std::endl;
+    
+    vector<int> vec1 = { 5, 1, 2, 1, 5};
+    std::cout << "Unique Element from the Array is : " << singleElement(vec1) << std::endl;
+    
+    vector<int> vec2 = { 2, 8, 15, 5, 5};
+    vector<int> ans = PairSum(vec2, 13);
+    std::cout << "Pair Sum index from the Array is : "  << ans[0] << "," << ans[1] << std::endl;
+    return 0;
+}
